@@ -1,20 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
-import 'package:socialapp/cashehelper.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/core/constant/loading.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/screens/emailvefirycation/fristsvrems.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/castomtextfromfield.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/custombutton.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/customhedrs.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/forgetpaswoordscreen.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/myalertdialog.dart';
 
-import '../../../../../layout/home/social.dart';
 import '../../style/appcolor.dart';
 import '../../widgets/navgations.dart';
 import '../register/register.dart';
@@ -33,32 +28,7 @@ class LoginScreen extends StatelessWidget {
         create: (context) => LogincubitCubit(),
         child: BlocConsumer<LogincubitCubit, LogincubitState>(
             listener: (context, state) {
-          if (state is LoginScsuflly) {
-            SocialappCubit.get(context).getuserdata(uid: state.uid);
-
-            SocialappCubit.get(context).getposts(uid1: state.uid);
-            SocialappCubit.get(context).getstoryes(uid1: state.uid);
-            SocialappCubit.get(context).getnotifications(uid1: state.uid);
-            SocialappCubit.get(context).gettoken(uid1: state.uid);
-            SocialappCubit.get(context).updatetoken(context,uid1: state.uid);
-            CacheHelper.savedata(key: 'uid', value: state.uid).then((value) {
-              return {
-                if (FirebaseAuth.instance.currentUser!.emailVerified)
-                  {
-                    navigtonandfinish(context, const SocialScreen()),
-                  }
-                else
-                  {
-                    navigtonandfinish(
-                        context,
-                        FristScreens(
-                          image: LogincubitCubit.get(context).image!,
-                          uid: state.uid,
-                        ))
-                  }
-              };
-            });
-          }
+           
           if (state is LoginError) {
             showSnackBar(
                 context: context, text: state.error.toString(), isError: true);
@@ -68,7 +38,7 @@ class LoginScreen extends StatelessWidget {
                 context: context, text: state.error.toString(), isError: true);
           }
         }, builder: (context, state) {
-          var cubit = SocialappCubit.get(context);
+        //  var cubit = SocialappCubit.get(context);
           SystemUiOverlayStyle value = SystemUiOverlayStyle.light
               .copyWith(statusBarColor: AppColors.blue);
           return Conditional.single(

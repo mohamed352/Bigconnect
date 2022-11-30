@@ -7,10 +7,13 @@ class ViewStory extends StatefulWidget {
   final Story model;
   final List<Story> storylist;
   final int index;
+  
   const ViewStory(
       {super.key,
       required this.model,
       required this.index,
+     
+
       required this.storylist});
 
   @override
@@ -35,9 +38,7 @@ class _ViewStoryState extends State<ViewStory> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-
-     PageView(
+    return PageView(
         controller: pagecontroller,
 
         // scrollDirection: Axis.horizontal,
@@ -48,6 +49,7 @@ class _ViewStoryState extends State<ViewStory> {
                   pagecontroller: pagecontroller!,
                   storylist: widget.storylist,
                   index: widget.index,
+                  
                 ))
             .toList());
   }

@@ -176,21 +176,17 @@ class SocialappCubit extends Cubit<SocialappState> {
   }) async {
     emit(SocialCubitUploadUserLoading());
     FirebaseFirestore.instance.collection('users').doc(uidforall).update({
-      'phone': phone == '' || phone == null ? usermodel!.phone : phone,
-      'name': name == '' || name == null ? usermodel!.name : name,
-      'bio': bio == '' || bio == null ? usermodel!.bio : bio,
-      'uid': uidforall,
+      if (phone != '' && phone != null) 'phone': phone,
+      if (name != '' && name != null) 'name': name,
+      if (bio != '' && bio != null) 'bio': bio,
+      if (email != '' && email != null) 'email': email,
+      if (image != null) 'image': image,
+      if (coverimage != null) 'cover': cover,
       'isEmailferivied': FirebaseAuth.instance.currentUser?.emailVerified,
-      'email': email == '' || email == null ? usermodel!.email : email,
-      'cover': cover ?? usermodel?.cover,
-      'image': image ?? usermodel?.image,
+      'uid': uidforall,
       'token': token
     }).then((value) {
-      if (name == '' || name == null) {
-        emit(SocialCubitUploadUserScuflly());
-      } else {
-        updateallusername(name);
-      }
+      emit(SocialCubitUploadUserScuflly());
     }).catchError((error) {
       emit(SocialCubitUploadUserError());
       debugPrint(error.toString());
@@ -227,39 +223,19 @@ class SocialappCubit extends Cubit<SocialappState> {
       emit(SocialCubitUploadCoverimageError());
       debugPrint(error.toString());
     });
-    FirebaseFirestore.instance
-        .collection('posts')
-        .where('uid', isEqualTo: uidforall)
-        .snapshots()
-        .listen((event) {
-      userimag = [];
-      for (var elemnt in event.docs) {
-        userimag.add(elemnt.id);
-      }
-    });
+
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
         .putFile(profileimage!)
         .then((value) => {
               value.ref.getDownloadURL().then((value1) {
-                for (int i = 0; i < userimag.length; i++) {
-                  FirebaseFirestore.instance
-                      .collection('posts')
-                      .doc(userimag[i])
-                      .update({'image': value1}).then((value) {
-                    updatauserdatat(
-                        image: value1,
-                        bio: bio,
-                        email: email,
-                        name: name,
-                        phone: phone);
-                    emit(UpdateUserImageAllDone());
-                  }).catchError((e) {
-                    emit(UpdateUserImageAllError());
-                    debugPrint(e.toString());
-                  });
-                }
+                updatauserdatat(
+                    image: value1,
+                    bio: bio,
+                    email: email,
+                    name: name,
+                    phone: phone);
               }).catchError((e) {
                 emit(UpdateUserImageAllError());
                 debugPrint(e.toString());
@@ -326,13 +302,11 @@ class SocialappCubit extends Cubit<SocialappState> {
         .child('users/${Uri.file(postgaleryimage!.path).pathSegments.last}')
         .putFile(postgaleryimage!)
         .then((value) => {
-              value.ref.getDownloadURL().then((value)  {
-               
+              value.ref.getDownloadURL().then((value) {
                 ceratposts(
-                    text: text,
-                    postimage: value,
-                   
-                    );
+                  text: text,
+                  postimage: value,
+                );
               }).catchError((error) {
                 emit(SocialCeratPostError());
                 debugPrint(error.toString());
@@ -1084,11 +1058,27 @@ class SocialappCubit extends Cubit<SocialappState> {
 
   Future<void> updatetoken(context, {String? uid1}) async {
     try {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(uidforall ?? uid1)
-          .update({'token': token});
-      emit(UpdateTokenDone());
+      if (profileimage == null) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(uidforall ?? uid1)
+            .update({'token': token});
+            emit(UpdateTokenDone());
+      } else {
+        var value = await firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
+            .putFile(profileimage!);
+          var image = await  value.ref.getDownloadURL();
+            FirebaseFirestore.instance
+            .collection('users')
+            .doc(uidforall ?? uid1)
+            .update({'token': token,'image' : image});
+            emit(UpdateTokenDone());
+            
+      }
+      
+      
     } catch (error) {
       debugPrint(error.toString());
       emit(UpdateTokenError());
@@ -1329,46 +1319,24 @@ class SocialappCubit extends Cubit<SocialappState> {
     }
   }
 
-  List<String> userimag = [];
   Future<void> updateImageAllUser({
     String? name,
     String? phone,
     String? bio,
     String? email,
   }) async {
-    FirebaseFirestore.instance
-        .collection('posts')
-        .where('uid', isEqualTo: uidforall)
-        .snapshots()
-        .listen((event) {
-      userimag = [];
-      for (var elemnt in event.docs) {
-        userimag.add(elemnt.id);
-      }
-    });
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
         .putFile(profileimage!)
         .then((value) => {
               value.ref.getDownloadURL().then((value1) {
-                for (int i = 0; i < userimag.length; i++) {
-                  FirebaseFirestore.instance
-                      .collection('posts')
-                      .doc(userimag[i])
-                      .update({'image': value1}).then((value) {
-                    updatauserdatat(
-                        image: value1,
-                        bio: bio,
-                        email: email,
-                        name: name,
-                        phone: phone);
-                    emit(UpdateUserImageAllDone());
-                  }).catchError((e) {
-                    emit(UpdateUserImageAllError());
-                    debugPrint(e.toString());
-                  });
-                }
+                updatauserdatat(
+                    image: value1,
+                    bio: bio,
+                    email: email,
+                    name: name,
+                    phone: phone);
               }).catchError((e) {
                 emit(UpdateUserImageAllError());
                 debugPrint(e.toString());
@@ -1378,34 +1346,6 @@ class SocialappCubit extends Cubit<SocialappState> {
       emit(UpdateUserImageAllError());
       debugPrint(e.toString());
     });
-  }
-
-  List<String> allnamepost = [];
-  Future<void> updateallusername(String name) async {
-    FirebaseFirestore.instance
-        .collection('posts')
-        .where(
-          'uid',
-          isEqualTo: uidforall,
-        )
-        .snapshots()
-        .listen((event) {
-      allnamepost = [];
-      for (var elemnt in event.docs) {
-        allnamepost.add(elemnt.id);
-      }
-    });
-    for (int i = 0; i < allnamepost.length; i++) {
-      FirebaseFirestore.instance
-          .collection('posts')
-          .doc(allnamepost[i])
-          .update({'name': name}).then((value) {
-        emit(UpdateUserNameAllDone());
-      }).catchError((e) {
-        emit(UpdateUserNameAllError());
-        debugPrint(e.toString());
-      });
-    }
   }
 
   File? pickpostimageu;

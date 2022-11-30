@@ -183,12 +183,11 @@ class Feedsscreen extends StatelessWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             GetPosts model = cubit.post[index];
-                            
+
                             return buildpostitem(context, index,
                                 name: model.name,
                                 tokenpost: model.token!,
                                 datatime: model.datatime,
-                                
                                 text: model.text,
                                 uid1: model.uid,
                                 image: model.image,

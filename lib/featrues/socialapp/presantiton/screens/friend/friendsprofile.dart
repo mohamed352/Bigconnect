@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:lottie/lottie.dart';
-import 'package:socialapp/config/endpoints.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/serach/serach.dart';
@@ -114,50 +113,50 @@ class FriendsProfile extends StatelessWidget {
                         .copyWith(fontSize: 35),
                   ),
                 ),
-                StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(uidforall)
-                        .collection('friends')
-                        .orderBy('datatime', descending: true)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                            child: LottieBuilder.asset(
-                                AppImageAssets.loading));
-                      } else {
-                        cubit.friendscount = [];
-                        for (var element in snapshot.data!.docs) {
-                          cubit.friendscount.add(element.id);
+                for (int i = 0; i < cubit.usermodel!.friends.length-1; i++)
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .where('uid',
+                              isEqualTo: cubit.usermodel!.friends[i ])
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(
+                              child:
+                                  LottieBuilder.asset(AppImageAssets.loading));
+                        } else {
+                          cubit.friendscount = [];
+                          for (var element in snapshot.data!.docs) {
+                            cubit.friendscount.add(element.id);
+                          }
+                          return Conditional.single(
+                              context: context,
+                              conditionBuilder: (context) =>
+                                  cubit.friendscount.isNotEmpty,
+                              widgetBuilder: (context) => ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    var snap = snapshot.data!.docs[index].data()
+                                        as Map<String, dynamic>;
+                                    return buildfriendsitem(
+                                        context: context,
+                                        uid: snap['uid'],
+                                        image: snap['image'],
+                                        text: snap['name'],
+                                        bio: snap['bio']);
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                  itemCount: cubit.friendscount.length),
+                              fallbackBuilder: (context) => Center(
+                                  child: LottieBuilder.asset(
+                                      AppImageAssets.empty1)));
                         }
-                        return Conditional.single(
-                            context: context,
-                            conditionBuilder: (context) =>
-                                cubit.friendscount.isNotEmpty,
-                            widgetBuilder: (context) => ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  var snap = snapshot.data!.docs[index].data()
-                                      as Map<String, dynamic>;
-                                  return buildfriendsitem(
-                                      context: context,
-                                      uid: snap['uid'],
-                                      image: snap['image'],
-                                      text: snap['name'],
-                                      bio: snap['bio']);
-                                },
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                itemCount: cubit.friendscount.length),
-                            fallbackBuilder: (context) => Center(
-                                child: LottieBuilder.asset(
-                                    AppImageAssets.empty1)));
-                      }
-                    })
+                      })
               ],
             ),
           ),

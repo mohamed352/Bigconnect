@@ -46,7 +46,6 @@ class ProfileScreen extends StatelessWidget {
             text: 'Hide post sucsfully',
           );
         }
-       
       },
       builder: (context, state) {
         // ignore: unused_local_variable
@@ -338,7 +337,7 @@ class ProfileScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            if (cubit.usermodel!.friends.length - 1 > 0)
+                            if (cubit.usermodel!.friends.length-1 > 0)
                               stremFriends(
                                   otheruid: otheruid,
                                   uid: snap['uid'],
@@ -356,7 +355,7 @@ class ProfileScreen extends StatelessWidget {
                                 stream: FirebaseFirestore.instance
                                     .collection('posts')
                                     .where('uid', isEqualTo: otheruid)
-                                   // .orderBy('datatime', descending: true)
+                                    // .orderBy('datatime', descending: true)
                                     .snapshots(),
                                 builder: (context, snapshot2) {
                                   if (!snapshot2.hasData) {

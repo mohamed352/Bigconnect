@@ -9,13 +9,15 @@ class StoryWdget extends StatefulWidget {
   final Story model;
   final PageController pagecontroller;
   final List<Story> storylist;
+
   final int index;
-  const StoryWdget(
-      {super.key,
-      required this.model,
-      required this.pagecontroller,
-      required this.storylist,
-      required this.index});
+  const StoryWdget({
+    super.key,
+    required this.model,
+    required this.pagecontroller,
+    required this.storylist,
+    required this.index,
+  });
 
   @override
   State<StoryWdget> createState() => _StoryWdgetState();
@@ -26,9 +28,9 @@ class _StoryWdgetState extends State<StoryWdget> {
   List<StoryItem> storyItem = [];
   dynamic date;
   SystemUiOverlayStyle currentStyle = SystemUiOverlayStyle.dark.copyWith(
-statusBarColor: Colors.black,
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.light,
+    statusBarColor: Colors.black,
+    statusBarBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.light,
   );
 
   @override
@@ -57,7 +59,6 @@ statusBarColor: Colors.black,
 
   @override
   Widget build(BuildContext context) {
-
     return Conditional.single(
       context: context,
       conditionBuilder: (context) => storyItem.isNotEmpty,
@@ -88,7 +89,11 @@ statusBarColor: Colors.black,
                   },
                 ),
               ),
-              ProfileStoryWidget(model: widget.model, date: date),
+              ProfileStoryWidget(
+                model: widget.model,
+                date: date,
+                index: widget.index,
+              ),
             ],
           ),
         );
