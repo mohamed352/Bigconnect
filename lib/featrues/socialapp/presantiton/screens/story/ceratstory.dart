@@ -6,7 +6,6 @@ import 'package:lottie/lottie.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/sound/audiosound.dart';
 
 class CeratStory extends StatelessWidget {
   final PaletteGenerator paletteGenerator;
@@ -17,7 +16,7 @@ class CeratStory extends StatelessWidget {
     return BlocConsumer<SocialappCubit, SocialappState>(
       listener: (context, state) async {
         if (state is UploadStoryImageDone) {
-          await playLoadingAudio(context);
+          await SocialappCubit.get(context). playLoadingAudio(context);
         }
       },
       builder: (context, state) {

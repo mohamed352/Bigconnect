@@ -7,7 +7,6 @@ import 'package:socialapp/featrues/socialapp/data/models/getpost.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/news%20post/newpost.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/profiels/profile.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/sound/audiosound.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/style/appcolor.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/animationsroutes.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/buildpostitem.dart';
@@ -33,7 +32,7 @@ class Feedsscreen extends StatelessWidget {
           navigtonto(context, NewPosts());
         }
         if (state is SocialTest) {
-          await playLikeSound();
+          await SocialappCubit.get(context). playLikeSound();
         }
         if (state is DeletPostDone) {
           showSnackBar(

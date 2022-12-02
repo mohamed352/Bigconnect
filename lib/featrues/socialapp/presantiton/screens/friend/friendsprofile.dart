@@ -113,12 +113,11 @@ class FriendsProfile extends StatelessWidget {
                         .copyWith(fontSize: 35),
                   ),
                 ),
-                for (int i = 0; i < cubit.usermodel!.friends.length-1; i++)
+                for (int i = 1; i < cubit.usermodel!.friends.length ; i++)
                   StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .where('uid',
-                              isEqualTo: cubit.usermodel!.friends[i ])
+                      stream: FirebaseFirestore.instance.collection('users')
+
+                          .where('uid', isEqualTo: cubit.usermodel!.friends[i])
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/sound/audiosound.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/style/appcolor.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/loadinginscreen.dart';
 
@@ -17,7 +16,7 @@ class NewPosts extends StatelessWidget {
     return BlocConsumer<SocialappCubit, SocialappState>(
       listener: (context, state) async {
         if (state is SocialCeratPostScsfully) {
-          await playLoadingAudio(context);
+          await SocialappCubit.get(context). playLoadingAudio(context);
         }
       },
       builder: (context, state) {

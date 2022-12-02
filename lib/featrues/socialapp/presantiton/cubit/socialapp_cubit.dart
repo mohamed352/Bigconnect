@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -143,23 +144,18 @@ class SocialappCubit extends Cubit<SocialappState> {
     required String email,
   }) async {
     emit(SocialCubitUploadUserLoading());
-    firebase_storage.FirebaseStorage.instance
-        .ref()
-        .child('users/${Uri.file(coverimage!.path).pathSegments.last}')
-        .putFile(coverimage!)
-        .then((value) => {
-              value.ref.getDownloadURL().then((value) {
-                updatauserdatat(
-                    cover: value,
-                    name: name,
-                    phone: phone,
-                    email: email,
-                    bio: bio);
-              }).catchError((error) {
-                emit(SocialCubitUploadCoverimageError());
-                debugPrint(error.toString());
-              })
-            });
+    try {
+      var refcover = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('users/${Uri.file(coverimage!.path).pathSegments.last}')
+          .putFile(coverimage!);
+      var imagecover = await refcover.ref.getDownloadURL();
+      updatauserdatat(
+          cover: imagecover, name: name, phone: phone, email: email, bio: bio);
+    } catch (e) {
+      emit(SocialCubitUploadCoverimageError());
+      debugPrint(e.toString());
+    }
   }
 
   Future<void> updatauserdatat({
@@ -175,23 +171,114 @@ class SocialappCubit extends Cubit<SocialappState> {
     String? image,
   }) async {
     emit(SocialCubitUploadUserLoading());
-    FirebaseFirestore.instance.collection('users').doc(uidforall).update({
-      if (phone != '' && phone != null) 'phone': phone,
-      if (name != '' && name != null) 'name': name,
-      if (bio != '' && bio != null) 'bio': bio,
-      if (email != '' && email != null) 'email': email,
-      if (image != null) 'image': image,
-      if (coverimage != null) 'cover': cover,
-      'isEmailferivied': FirebaseAuth.instance.currentUser?.emailVerified,
-      'uid': uidforall,
-      'token': token
-    }).then((value) {
+    try {
+      FirebaseFirestore.instance.collection('users').doc(uidforall).update({
+        if (phone != '' && phone != null) 'phone': phone,
+        if (name != '' && name != null) 'name': name,
+        if (bio != '' && bio != null) 'bio': bio,
+        if (email != '' && email != null) 'email': email,
+        if (image != null) 'image': image,
+        if (cover != null) 'cover': cover,
+        'isEmailferivied': FirebaseAuth.instance.currentUser?.emailVerified,
+        'uid': uidforall,
+        'token': token
+      });
       emit(SocialCubitUploadUserScuflly());
-    }).catchError((error) {
+    } catch (error) {
       emit(SocialCubitUploadUserError());
       debugPrint(error.toString());
-    });
+    }
   }
+
+  Future<void> playLoadingAudioEdit(context) async {
+    try {
+      final audioplayer = AudioPlayer();
+      final player = AudioCache(prefix: 'assets/audio/');
+      final url = await player.load('loading.mp3');
+      audioplayer.setSourceUrl(url.path);
+      audioplayer.play(AssetSource('audio/loading.mp3'));
+      SocialappCubit.get(context).ispostloading = false;
+      Navigator.of(context).pop();
+      showSnackBar(
+        context: context,
+        text: 'Edit post compelet',
+      );
+      emit(AudioSoundDone());
+    } catch (e) {
+      emit(AudioSoundError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> playLikeSound() async {
+    try {
+      final audioplayer = AudioPlayer();
+      final player = AudioCache(prefix: 'assets/audio/');
+      final url = await player.load('like.mp3');
+      audioplayer.setSourceUrl(url.path);
+
+      audioplayer.play(AssetSource('audio/like.mp3'));
+      emit(AudioSoundDone());
+    } catch (e) {
+      emit(AudioSoundError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> playLoadingAudioComment(
+      context, TextEditingController commenControler) async {
+    try {
+      final audioplayer = AudioPlayer();
+      final player = AudioCache(prefix: 'assets/audio/');
+      final url = await player.load('loading.mp3');
+      audioplayer.setSourceUrl(url.path);
+      audioplayer.play(AssetSource('audio/loading.mp3'));
+      SocialappCubit.get(context).commentimage = null;
+      commenControler.text = '';
+      SocialappCubit.get(context).iscommentloading = false;
+      emit(AudioSoundDone());
+    } catch (e) {
+      emit(AudioSoundError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> playLoadingAudio(context) async {
+    try {
+      final audioplayer = AudioPlayer();
+      final player = AudioCache(prefix: 'assets/audio/');
+      final url = await player.load('loading.mp3');
+      audioplayer.setSourceUrl(url.path);
+      audioplayer.play(AssetSource('audio/loading.mp3'));
+      SocialappCubit.get(context).ispostloading = false;
+      Navigator.of(context).pop();
+      emit(AudioSoundDone());
+    } catch (e) {
+      emit(AudioSoundError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> playLoadingAudioEditProfile(context) async {
+    try {
+      final audioplayer = AudioPlayer();
+      final player = AudioCache(prefix: 'assets/audio/');
+      final url = await player.load('loading.mp3');
+      audioplayer.setSourceUrl(url.path);
+      audioplayer.play(AssetSource('audio/loading.mp3'));
+      SocialappCubit.get(context).isEditProfileLoading = false;
+      showSnackBar(
+        context: context,
+        text: 'Edit scsuflly',
+      );
+      emit(AudioSoundDone());
+    } catch (e) {
+      emit(AudioSoundError());
+      debugPrint(e.toString());
+    }
+  }
+
+  bool isEditProfileLoading = false;
 
   Future<void> uploadbothimage({
     required String name,
@@ -200,51 +287,29 @@ class SocialappCubit extends Cubit<SocialappState> {
     required String email,
   }) async {
     emit(SocialCubitUploadUserLoading());
-    firebase_storage.FirebaseStorage.instance
-        .ref()
-        .child('users/${Uri.file(coverimage!.path).pathSegments.last}')
-        .putFile(coverimage!)
-        .then((value) => {
-              value.ref.getDownloadURL().then((value) {
-                //  emit(SocialCubitUploadCoverimageScsufly());
-
-                updatauserdatat(
-                    name: name,
-                    phone: phone,
-                    bio: bio,
-                    email: email,
-                    cover: value);
-              }).catchError((error) {
-                emit(SocialCubitUploadCoverimageError());
-                debugPrint(error.toString());
-              })
-            })
-        .catchError((error) {
-      emit(SocialCubitUploadCoverimageError());
-      debugPrint(error.toString());
-    });
-
-    firebase_storage.FirebaseStorage.instance
-        .ref()
-        .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
-        .putFile(profileimage!)
-        .then((value) => {
-              value.ref.getDownloadURL().then((value1) {
-                updatauserdatat(
-                    image: value1,
-                    bio: bio,
-                    email: email,
-                    name: name,
-                    phone: phone);
-              }).catchError((e) {
-                emit(UpdateUserImageAllError());
-                debugPrint(e.toString());
-              })
-            })
-        .catchError((e) {
-      emit(UpdateUserImageAllError());
+    try {
+      var ref = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
+          .putFile(profileimage!);
+      var proimage = await ref.ref.getDownloadURL();
+      var refcover = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('users/${Uri.file(coverimage!.path).pathSegments.last}')
+          .putFile(coverimage!);
+      var imagecover = await refcover.ref.getDownloadURL();
+      updatauserdatat(
+        bio: bio,
+        cover: imagecover,
+        email: email,
+        image: proimage,
+        name: name,
+        phone: phone,
+      );
+    } catch (e) {
+      emit(SocialCubitUploadUserError());
       debugPrint(e.toString());
-    });
+    }
   }
 
   File? postgaleryimage;
@@ -275,7 +340,7 @@ class SocialappCubit extends Cubit<SocialappState> {
         postimage: postimage ?? '',
         text: text,
         commentint: 0,
-        token: token,
+        token: usermodel!.token,
         postid: notfiidh);
 
     FirebaseFirestore.instance
@@ -381,6 +446,7 @@ class SocialappCubit extends Cubit<SocialappState> {
   }
 
   List<String> friendscount = [];
+
   List<GetPosts> post = [];
   List<String> posid = [];
   List<String> commentid = [];
@@ -514,7 +580,7 @@ class SocialappCubit extends Cubit<SocialappState> {
           commentimage: commentimage ?? '',
           datatime: DateTime.now(),
           text: text,
-          token: token,
+          token: usermodel!.token,
           uid: usermodel!.uid,
           name: usermodel!.name,
           image: usermodel!.image);
@@ -1063,22 +1129,19 @@ class SocialappCubit extends Cubit<SocialappState> {
             .collection('users')
             .doc(uidforall ?? uid1)
             .update({'token': token});
-            emit(UpdateTokenDone());
-      } else {
+        emit(UpdateTokenDone());
+      } else if (profileimage != null) {
         var value = await firebase_storage.FirebaseStorage.instance
             .ref()
             .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
             .putFile(profileimage!);
-          var image = await  value.ref.getDownloadURL();
-            FirebaseFirestore.instance
+        var image = await value.ref.getDownloadURL();
+        FirebaseFirestore.instance
             .collection('users')
             .doc(uidforall ?? uid1)
-            .update({'token': token,'image' : image});
-            emit(UpdateTokenDone());
-            
+            .update({'token': token, 'image': image});
+        emit(UpdateTokenDone());
       }
-      
-      
     } catch (error) {
       debugPrint(error.toString());
       emit(UpdateTokenError());
@@ -1110,6 +1173,7 @@ class SocialappCubit extends Cubit<SocialappState> {
         } else {
           debugPrint('user denied');
         }
+        token = value;
         CacheHelper.savedata(key: 'token', value: value);
         localnotifications();
         emit(GetUserTokenDone());
@@ -1177,7 +1241,7 @@ class SocialappCubit extends Cubit<SocialappState> {
               "body": body,
               "android_channel_id": "2"
             },
-            "to": token
+            "to": token == usermodel!.token ? '' : token
           }));
     } catch (e) {
       emit(SendFcmError());
@@ -1252,7 +1316,6 @@ class SocialappCubit extends Cubit<SocialappState> {
           storyimage: [image],
           datatime: DateTime.now(),
           name: usermodel?.name,
-          token: token,
           uid: uidforall,
           userimage: usermodel?.image,
           capiton: [capiton],
@@ -1319,33 +1382,24 @@ class SocialappCubit extends Cubit<SocialappState> {
     }
   }
 
-  Future<void> updateImageAllUser({
+  Future<void> updateProfileImage({
     String? name,
     String? phone,
     String? bio,
     String? email,
   }) async {
-    firebase_storage.FirebaseStorage.instance
-        .ref()
-        .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
-        .putFile(profileimage!)
-        .then((value) => {
-              value.ref.getDownloadURL().then((value1) {
-                updatauserdatat(
-                    image: value1,
-                    bio: bio,
-                    email: email,
-                    name: name,
-                    phone: phone);
-              }).catchError((e) {
-                emit(UpdateUserImageAllError());
-                debugPrint(e.toString());
-              })
-            })
-        .catchError((e) {
+    try {
+      var ref = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('posts/${Uri.file(profileimage!.path).pathSegments.last}')
+          .putFile(profileimage!);
+      var proimage = await ref.ref.getDownloadURL();
+      updatauserdatat(
+          image: proimage, bio: bio, email: email, name: name, phone: phone);
+    } catch (error) {
       emit(UpdateUserImageAllError());
-      debugPrint(e.toString());
-    });
+      debugPrint(error.toString());
+    }
   }
 
   File? pickpostimageu;
@@ -1443,12 +1497,25 @@ class SocialappCubit extends Cubit<SocialappState> {
         'token': token,
       });
       if (profileimage != null) {
-        updateImageAllUser();
+        updateProfileImage();
       } else {
         emit(EditPubilcRulesDone());
       }
     } catch (e) {
       emit(EditPubilcRulesError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> deletMyStory(String uidstory) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('stories')
+          .doc(uidstory)
+          .delete();
+      emit(DeletMyStoryDone());
+    } catch (e) {
+      emit(DeletMyStoryError());
       debugPrint(e.toString());
     }
   }

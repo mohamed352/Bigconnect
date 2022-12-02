@@ -32,6 +32,7 @@ class SocialappGetUserError extends SocialappState {
 
 class EditCommentLoading extends SocialappState {}
 
+
 class EditCommentDone extends SocialappState {}
 
 class EditCommentError extends SocialappState {}
@@ -89,6 +90,8 @@ class SocialCubitUploadUserLoading extends SocialappState {}
 class SocialCubitUploadUserError extends SocialappState {}
 
 class SocialCubitUploadUserScuflly extends SocialappState {}
+class AudioSoundDone extends SocialappState {}
+class AudioSoundError extends SocialappState {}
 
 class SocialCubitUploadProfileimageScsufly extends SocialappState {}
 
@@ -298,3 +301,6 @@ class EditPubilcRulesLoading extends SocialappState {}
 class EditPubilcRulesDone extends SocialappState {}
 
 class EditPubilcRulesError extends SocialappState {}
+class DeletMyStoryDone extends SocialappState {}
+
+class DeletMyStoryError extends SocialappState {}

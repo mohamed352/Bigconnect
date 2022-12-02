@@ -9,7 +9,6 @@ import 'package:socialapp/featrues/socialapp/presantiton/widgets/custombutton.da
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/customhedrs.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/forgetpaswoordscreen.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/myalertdialog.dart';
-
 import '../../style/appcolor.dart';
 import '../../widgets/navgations.dart';
 import '../register/register.dart';

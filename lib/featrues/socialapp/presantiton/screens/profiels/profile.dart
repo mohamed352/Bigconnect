@@ -9,7 +9,6 @@ import 'package:socialapp/config/endpoints.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/edit/editpubilcrules.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/sound/audiosound.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/style/themapp.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/animationsroutes.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/buildpostitem.dart';
@@ -32,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
     return BlocConsumer<SocialappCubit, SocialappState>(
       listener: (context, state) async {
         if (state is SocialTest) {
-          await playLikeSound();
+          await  SocialappCubit.get(context). playLikeSound();
         }
         if (state is DeletPostDone) {
           showSnackBar(
@@ -56,18 +55,17 @@ class ProfileScreen extends StatelessWidget {
         return AnnotatedRegion(
           value: cubit.isdark == false ? valuelight : valuedark,
           child: Scaffold(
-            body: StreamBuilder<QuerySnapshot>(
+            body: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    .where('uid', isEqualTo: otheruid)
+                    .doc(otheruid)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
                         child: LottieBuilder.asset(AppImageAssets.loading));
                   } else {
-                    var snap =
-                        snapshot.data!.docs[0].data() as Map<String, dynamic>;
+                    var snap = snapshot.data!.data() as Map<String, dynamic>;
                     return SafeArea(
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
@@ -337,11 +335,12 @@ class ProfileScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            if (cubit.usermodel!.friends.length-1 > 0)
-                              stremFriends(
-                                  otheruid: otheruid,
-                                  uid: snap['uid'],
-                                  context: context),
+                            stremFriends(
+                                otheruid: otheruid,
+                                uid: snap['uid'],
+                                
+                                friends: snap['friends'],
+                                context: context),
                             if (cubit.usermodel!.friends.length - 1 > 0)
                               Container(
                                 color: cubit.isdark == false

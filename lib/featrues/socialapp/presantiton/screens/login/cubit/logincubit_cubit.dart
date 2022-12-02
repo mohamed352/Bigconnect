@@ -42,8 +42,10 @@ class LogincubitCubit extends Cubit<LogincubitState> {
       SocialappCubit.get(context).getnotifications(uid1: value.user!.uid);
       SocialappCubit.get(context).gettoken(uid1: value.user!.uid);
       SocialappCubit.get(context).updatetoken(context, uid1: value.user!.uid);
-      
-      CacheHelper.savedata(key: 'uid', value: value.user!.uid);
+
+      remmberme
+          ? CacheHelper.savedata(key: 'uid', value: value.user!.uid)
+          : null;
       navigtonandfinish(context, const SocialScreen());
       emit(LoginScsuflly(value.user!.uid));
     } catch (error) {

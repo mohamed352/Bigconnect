@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,8 +48,7 @@ Widget buildpostitem(
     conditionBuilder: (context) => show != true && showpostfriend,
     widgetBuilder: (context) {
       return StreamBuilder<QuerySnapshot>(
-          stream:
-           FirebaseFirestore.instance
+          stream: FirebaseFirestore.instance
               .collection('users')
               .where('uid', isEqualTo: uid1)
               .snapshots(),
@@ -137,9 +134,9 @@ Widget buildpostitem(
                             modelSheetForPost(
                                 context: context,
                                 uid1: uid1,
-                                image: image,
+                                image: snap['image'],
                                 text: text,
-                                name: name,
+                                name: snap['name'],
                                 postId: postId,
                                 postimage: postimage,
                                 postid: postid,

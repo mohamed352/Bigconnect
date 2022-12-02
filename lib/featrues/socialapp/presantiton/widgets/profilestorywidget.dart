@@ -5,6 +5,7 @@ import 'package:socialapp/config/endpoints.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/data/models/storymodel.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/profiels/profile.dart';
+import 'package:socialapp/featrues/socialapp/presantiton/screens/story/deletstory.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/fromattime.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/navgations.dart';
 
@@ -75,16 +76,31 @@ class ProfileStoryWidget extends StatelessWidget {
                           color: Colors.white,
                           height: 2.5),
                     ),
-                    const Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          size: 30,
-                          color: Colors.white,
-                        )),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              size: 27,
+                              color: Colors.white,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              modelSheetToDeletStory(
+                                  context: context, uidStory: '${model.uid}');
+                                  
+                            },
+                            icon: const Icon(
+                              Icons.more_horiz,
+                              size: 27,
+                              color: Colors.white,
+                            )),
+                      ],
+                    ),
                   ],
                 ),
               ),

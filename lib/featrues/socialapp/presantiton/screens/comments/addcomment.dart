@@ -6,7 +6,6 @@ import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/data/models/commentmodel.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/comments/streamcomment.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/sound/audiosound.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/myalertdialog.dart';
 
 TextEditingController commenControler = TextEditingController();
@@ -23,10 +22,10 @@ Future<dynamic> addcommenttest(
       return BlocConsumer<SocialappCubit, SocialappState>(
         listener: (context, state) async {
           if (state is SocialappGetComentScsues) {
-            await playLoadingAudioComment(context, commenControler);
+            await cubit.playLoadingAudioComment(context, commenControler);
           }
           if (state is Socialsendcommentliksdone) {
-            await playLikeSound();
+            await cubit.playLikeSound();
           }
           if (state is DeletCommentDone) {
             showSnackBar(
