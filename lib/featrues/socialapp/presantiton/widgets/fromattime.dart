@@ -1,7 +1,7 @@
-String getTimeDifferenceFromNow(DateTime dateTime) {
+String getTimeDifferenceFromNow(DateTime dateTime,bool justnow) {
   Duration difference = DateTime.now().difference(dateTime);
   if (difference.inSeconds < 5) {
-    return "Just now";
+    return justnow?"Just now" : "Now";
   } else if (difference.inMinutes < 1) {
     return "${difference.inSeconds}s ";
   } else if (difference.inHours < 1) {

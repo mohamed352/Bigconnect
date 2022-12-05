@@ -27,6 +27,7 @@ class _StoryWdgetState extends State<StoryWdget> {
   StoryController controller = StoryController();
   List<StoryItem> storyItem = [];
   dynamic date;
+  late int indexstory;
   SystemUiOverlayStyle currentStyle = SystemUiOverlayStyle.dark.copyWith(
     statusBarColor: Colors.black,
     statusBarBrightness: Brightness.light,
@@ -39,6 +40,7 @@ class _StoryWdgetState extends State<StoryWdget> {
     initStoryPageItem();
     controller = StoryController();
     date = widget.model.datatime;
+    indexstory = 0;
   }
 
   @override
@@ -83,6 +85,7 @@ class _StoryWdgetState extends State<StoryWdget> {
                     final index = storyItem.indexOf(storyItems);
                     if (index > 0) {
                       setState(() {
+                        indexstory = index;
                         date = widget.model.times[index];
                       });
                     }
@@ -93,6 +96,8 @@ class _StoryWdgetState extends State<StoryWdget> {
                 model: widget.model,
                 date: date,
                 index: widget.index,
+                indexstory: indexstory,
+                controller: controller,
               ),
             ],
           ),

@@ -8,17 +8,24 @@ import 'package:socialapp/featrues/socialapp/presantiton/screens/profiels/profil
 import 'package:socialapp/featrues/socialapp/presantiton/screens/story/deletstory.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/fromattime.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/navgations.dart';
+import 'package:story_view/story_view.dart';
 
+// ignore: must_be_immutable
 class ProfileStoryWidget extends StatelessWidget {
   final Story model;
 
   final dynamic date;
   final dynamic index;
-  const ProfileStoryWidget({
+
+  final dynamic indexstory;
+  StoryController controller = StoryController();
+  ProfileStoryWidget({
     super.key,
     required this.model,
     required this.date,
     required this.index,
+    required this.indexstory,
+    required this.controller,
   });
 
   @override
@@ -70,7 +77,7 @@ class ProfileStoryWidget extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      getTimeDifferenceFromNow(date.toDate()),
+                      getTimeDifferenceFromNow(date.toDate(), false),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -79,25 +86,41 @@ class ProfileStoryWidget extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                            onPressed: () {
+                        InkWell(
+                            onTap: () {
                               Navigator.of(context).pop();
                             },
-                            icon: const Icon(
-                              Icons.close,
-                              size: 27,
-                              color: Colors.white,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 5),
+                              child: Icon(
+                                Icons.close,
+                                size: 30,
+                                color: Colors.white,
+                              ),
                             )),
-                        IconButton(
-                            onPressed: () {
+                        InkWell(
+                            onTap: () {
+                              controller.pause();
                               modelSheetToDeletStory(
-                                  context: context, uidStory: '${model.uid}');
-                                  
+                                  capiton: model.capiton[
+                                      indexstory < model.capiton.length
+                                          ? indexstory
+                                          : 0],
+                                  datetime: date,
+                                  image: model.storyimage,
+                                  storyimage: model.storyimage[indexstory],
+                                  index: indexstory,
+                                  context: context,
+                                  uidStory: '${model.uid}');
                             },
-                            icon: const Icon(
-                              Icons.more_horiz,
-                              size: 27,
-                              color: Colors.white,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 5),
+                              child: Icon(
+                                Icons.more_horiz,
+                                size: 30,
+                                color: Colors.white,
+                              ),
                             )),
                       ],
                     ),

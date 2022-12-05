@@ -111,7 +111,7 @@ Widget buildpostitem(
                                 ],
                               ),
                               Text(
-                                getTimeDifferenceFromNow(datatime.toDate()),
+                                getTimeDifferenceFromNow(datatime.toDate(),true),
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption!

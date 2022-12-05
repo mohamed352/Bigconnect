@@ -9,6 +9,7 @@ import 'package:socialapp/featrues/socialapp/presantiton/widgets/navgations.dart
 
 Future<dynamic> modelCommentSheet(
   Comments model,
+  String image,
   context,
   index,
   postId,
@@ -93,13 +94,12 @@ Future<dynamic> modelCommentSheet(
             if (uidforall == model.uid)
               InkWell(
                 onTap: () {
-                 
                   Navigator.of(context).pop();
                   navigtonto(
                       context,
                       EditComment(
                         commentId: model.commentid!,
-                        image: model.image!,
+                        image: image,
                         postid: postId,
                         text: model.text!,
                       ));

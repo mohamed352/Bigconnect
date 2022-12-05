@@ -81,7 +81,8 @@ Widget buildcommentitem(
                           GestureDetector(
                             onLongPress: () {
                               FocusScope.of(context).requestFocus(FocusNode());
-                              modelCommentSheet(model, context, index, postId);
+                              modelCommentSheet(
+                                  model, snap['image'], context, index, postId);
                             },
                             child: Container(
                               //  color: AppColors.grayshade,
@@ -106,7 +107,8 @@ Widget buildcommentitem(
                           GestureDetector(
                             onLongPress: () {
                               FocusScope.of(context).requestFocus(FocusNode());
-                              modelCommentSheet(model, context, index, postId);
+                              modelCommentSheet(
+                                  model, snap['image'], context, index, postId);
                             },
                             onTap: () async {
                               PaletteGenerator paletteGenerator =
@@ -139,8 +141,8 @@ Widget buildcommentitem(
                               width: 12,
                             ),
                             Text(
-                              getTimeDifferenceFromNow(model.datatime
-                                  .toDate()), //  tago.format(model.datatime.toDate()),
+                              getTimeDifferenceFromNow(model.datatime.toDate(),
+                                  true), //  tago.format(model.datatime.toDate()),
                               // '${model.datatime}',
                               style: Theme.of(context)
                                   .textTheme

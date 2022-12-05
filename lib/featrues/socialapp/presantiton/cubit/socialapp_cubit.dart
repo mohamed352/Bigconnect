@@ -1519,4 +1519,28 @@ class SocialappCubit extends Cubit<SocialappState> {
       debugPrint(e.toString());
     }
   }
+
+  Future<void> deletMyOneStory({
+    required String uidstory,
+     String? capiton,
+    required String storyimage,
+    required dynamic datetime,
+    required List image,
+  }) async {
+    try {
+      await FirebaseFirestore.instance
+            .collection('stories')
+            .doc(uidstory)
+            .update({
+              if(capiton !='')
+          'capiton': FieldValue.arrayRemove([capiton]),
+          'storyimage': FieldValue.arrayRemove([storyimage]),
+          'times': FieldValue.arrayRemove([datetime]),
+        });
+        emit(DeletMyStoryDone());
+    } catch (e) {
+      emit(DeletMyStoryError());
+      debugPrint(e.toString());
+    }
+  }
 }

@@ -113,7 +113,7 @@ Widget buildNotificationsitem(Notifications model, context, index) {
           //   width: 0,
           // ),
           Text(
-            getTimeDifferenceFromNow(model.datatime.toDate()),
+            getTimeDifferenceFromNow(model.datatime.toDate(),true),
             style: Theme.of(context).textTheme.caption,
           ),
         ],
