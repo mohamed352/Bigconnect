@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:giphy_get/giphy_get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -26,6 +27,7 @@ import 'package:socialapp/featrues/socialapp/presantiton/screens/feeds/feeds.dar
 import 'package:socialapp/featrues/socialapp/presantiton/screens/menu/menu.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/splach/presatoitons/splachview.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/story/ceratstory.dart';
+import 'package:socialapp/featrues/socialapp/presantiton/screens/story/creatgifstory.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/style/appcolor.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/myalertdialog.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/navgations.dart';
@@ -251,6 +253,8 @@ class SocialappCubit extends Cubit<SocialappState> {
       audioplayer.setSourceUrl(url.path);
       audioplayer.play(AssetSource('audio/loading.mp3'));
       SocialappCubit.get(context).ispostloading = false;
+      SocialappCubit.get(context).isloadingStory = false;
+
       Navigator.of(context).pop();
       emit(AudioSoundDone());
     } catch (e) {
@@ -331,21 +335,22 @@ class SocialappCubit extends Cubit<SocialappState> {
     String? postimage,
   }) {
     emit(SocialCeratPostLoding());
-    String notfiidh = const Uuid().v1();
+    String postId = const Uuid().v1();
+
     GetPosts postsmodel = GetPosts(
         datatime: DateTime.now(),
-        image: usermodel!.image,
-        name: usermodel!.name,
+        // image: usermodel!.image,
+        // name: usermodel!.name,
         uid: usermodel!.uid,
         postimage: postimage ?? '',
         text: text,
         commentint: 0,
         token: usermodel!.token,
-        postid: notfiidh);
+        postid: postId);
 
     FirebaseFirestore.instance
         .collection('posts')
-        .doc(notfiidh)
+        .doc(postId)
         .set(postsmodel.tomap())
         .then((value) {
       emit(SocialCeratPostScsfully());
@@ -570,20 +575,23 @@ class SocialappCubit extends Cubit<SocialappState> {
     required String tokenfcm,
     String? commentimage,
     String? text,
+    String? gif,
   }) async {
     emit(SocialappGetComentLoading());
-    if (text != '' || commentimage != null) {
+    if (text != '' || commentimage != null || gif != null) {
       String commentid = const Uuid().v1();
 
       Comments commentmodel = Comments(
-          commentid: commentid,
-          commentimage: commentimage ?? '',
-          datatime: DateTime.now(),
-          text: text,
-          token: usermodel!.token,
-          uid: usermodel!.uid,
-          name: usermodel!.name,
-          image: usermodel!.image);
+        commentid: commentid,
+        commentimage: commentimage ?? '',
+        datatime: DateTime.now(),
+        text: text,
+        gif: gif,
+        token: usermodel!.token,
+        uid: usermodel!.uid,
+        // name: usermodel!.name,
+        // image: usermodel!.
+      );
 
       FirebaseFirestore.instance
           .collection('posts')
@@ -1262,6 +1270,7 @@ class SocialappCubit extends Cubit<SocialappState> {
         PaletteGenerator paletteGenerator =
             await PaletteGenerator.fromImageProvider(FileImage(pickstoryimage!),
                 maximumColorCount: 20, size: const Size(200, 200));
+        Navigator.of(context).pop();
         navigtonto(
             context,
             CeratStory(
@@ -1288,7 +1297,7 @@ class SocialappCubit extends Cubit<SocialappState> {
         .then((value) {
       value.ref.getDownloadURL().then((value) {
         uploadStory(image: value, capiton: capiton);
-        emit(UploadStoryImageDone());
+        // emit(UploadStoryImageDone());
       }).catchError((e) {
         emit(UploadStoryImageError());
         debugPrint(e.toString());
@@ -1300,6 +1309,7 @@ class SocialappCubit extends Cubit<SocialappState> {
   }
 
   //List<String> imageurl = [];
+  bool isloadingStory = false;
 
   Future<void> uploadStory({
     required String image,
@@ -1315,9 +1325,9 @@ class SocialappCubit extends Cubit<SocialappState> {
       Story model = Story(
           storyimage: [image],
           datatime: DateTime.now(),
-          name: usermodel?.name,
+          // name: usermodel?.name,
           uid: uidforall,
-          userimage: usermodel?.image,
+          //userimage: usermodel?.image,
           capiton: [capiton],
           times: [DateTime.now()]);
       FirebaseFirestore.instance
@@ -1325,7 +1335,7 @@ class SocialappCubit extends Cubit<SocialappState> {
           .doc(uidforall)
           .set(model.tomap())
           .then((value) {
-        // emit(UploadStoryImageDone());
+        emit(UploadStoryImageDone());
       }).catchError((e) {
         emit(UploadStoryImageError());
         debugPrint(e.toString());
@@ -1337,7 +1347,7 @@ class SocialappCubit extends Cubit<SocialappState> {
         // if (capiton != '')
         'capiton': FieldValue.arrayUnion([capiton]),
       }).then((value) {
-//        emit(UploadStoryImageDone());
+        emit(UploadStoryImageDone());
       }).catchError((e) {
         emit(UploadStoryImageError());
         debugPrint(e.toString());
@@ -1522,24 +1532,105 @@ class SocialappCubit extends Cubit<SocialappState> {
 
   Future<void> deletMyOneStory({
     required String uidstory,
-     String? capiton,
+    String? capiton,
     required String storyimage,
     required dynamic datetime,
     required List image,
   }) async {
     try {
       await FirebaseFirestore.instance
-            .collection('stories')
-            .doc(uidstory)
-            .update({
-              if(capiton !='')
-          'capiton': FieldValue.arrayRemove([capiton]),
-          'storyimage': FieldValue.arrayRemove([storyimage]),
-          'times': FieldValue.arrayRemove([datetime]),
-        });
-        emit(DeletMyStoryDone());
+          .collection('stories')
+          .doc(uidstory)
+          .update({
+        if (capiton != '') 'capiton': FieldValue.arrayRemove([capiton]),
+        'storyimage': FieldValue.arrayRemove([storyimage]),
+        'times': FieldValue.arrayRemove([datetime]),
+      });
+      emit(DeletMyStoryDone());
     } catch (e) {
       emit(DeletMyStoryError());
+      debugPrint(e.toString());
+    }
+  }
+
+//? Api Key  NC39VKr0Eubmcp2vkKRXv5Od4yI6rmSP
+  Future<void> sendGif({
+    required context,
+    required String postid,
+    required String tokenfcm,
+    String? text,
+  }) async {
+    try {
+      final gif = await GiphyGet.getGif(
+        context: context, //Required
+        apiKey: "NC39VKr0Eubmcp2vkKRXv5Od4yI6rmSP", //Required.
+        lang: GiphyLanguage.english,
+      );
+      if (gif != null) {
+        int gifUrlPartIndex = gif.url!.lastIndexOf('-') + 1;
+        String gifUrlPart = gif.url!.substring(gifUrlPartIndex);
+        String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
+
+        postcomment(
+          postid: postid,
+          tokenfcm: tokenfcm,
+          gif: newgifUrl,
+          text: text,
+        );
+      }
+    } catch (e) {
+      emit(PickGifError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> sendGifToStory({
+    required context,
+    required String capiton,
+  }) async {
+    try {
+      final gif = await GiphyGet.getGif(
+        context: context, //Required
+        apiKey: "NC39VKr0Eubmcp2vkKRXv5Od4yI6rmSP", //Required.
+        lang: GiphyLanguage.english,
+      );
+      if (gif != null) {
+        int gifUrlPartIndex = gif.url!.lastIndexOf('-') + 1;
+        String gifUrlPart = gif.url!.substring(gifUrlPartIndex);
+        String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
+        Navigator.of(context).pop();
+        navigtonto(context, CeratStoryGif(gif: newgifUrl));
+        emit(PickGifDone());
+
+        //uploadStory(image: newgifUrl, capiton: capiton);
+
+      }
+    } catch (e) {
+      emit(PickGifError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> sendGifToNewPost({
+    required context,
+    required String text,
+  }) async {
+    try {
+      final gif = await GiphyGet.getGif(
+        context: context, //Required
+        apiKey: "NC39VKr0Eubmcp2vkKRXv5Od4yI6rmSP", //Required.
+        lang: GiphyLanguage.english,
+      );
+      if (gif != null) {
+        int gifUrlPartIndex = gif.url!.lastIndexOf('-') + 1;
+        String gifUrlPart = gif.url!.substring(gifUrlPartIndex);
+        String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
+        Navigator.of(context).pop();
+        ispostloading = true;
+        ceratposts(text: text, postimage: newgifUrl);
+      }
+    } catch (e) {
+      emit(PickGifError());
       debugPrint(e.toString());
     }
   }

@@ -301,6 +301,10 @@ class EditPubilcRulesLoading extends SocialappState {}
 class EditPubilcRulesDone extends SocialappState {}
 
 class EditPubilcRulesError extends SocialappState {}
+
 class DeletMyStoryDone extends SocialappState {}
 
 class DeletMyStoryError extends SocialappState {}
+class PickGifDone extends SocialappState {}
+
+class PickGifError extends SocialappState {}

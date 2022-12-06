@@ -16,7 +16,7 @@ class NewPosts extends StatelessWidget {
     return BlocConsumer<SocialappCubit, SocialappState>(
       listener: (context, state) async {
         if (state is SocialCeratPostScsfully) {
-          await SocialappCubit.get(context). playLoadingAudio(context);
+          await SocialappCubit.get(context).playLoadingAudio(context);
         }
       },
       builder: (context, state) {
@@ -214,46 +214,74 @@ class NewPosts extends StatelessWidget {
                             onTap: () {
                               cubit.pickpostimage();
                             },
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.photo_library_rounded,
-                                  size: 35,
-                                  color: Colors.green,
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  'photo/video',
-                                  style: TextStyle(),
-                                ),
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 10),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.photo_library_rounded,
+                                    size: 35,
+                                    color: Colors.green,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                    child: Text(
+                                      'photo/video',
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           Container(
                             color: AppColors.grayshade,
                             height: 1,
                             width: double.infinity,
-                            margin: const EdgeInsets.all(7),
                           ),
                           InkWell(
                             onTap: () {
                               cubit.postgcamerimage();
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 10),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.camera_alt,
+                                    size: 35,
+                                    color: AppColors.blue,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                    child: Text(
+                                      'Camera',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              cubit.sendGifToNewPost(
+                                  context: context, text: textController.text);
+                            },
                             child: Row(
                               children: const [
                                 Icon(
-                                  Icons.camera_alt,
-                                  size: 35,
-                                  color: AppColors.blue,
+                                  Icons.gif_box,
+                                  size: 45,
+                                  color: Colors.red,
                                 ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  'Camera',
-                                  style: TextStyle(),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 4),
+                                  child: Text(
+                                    'Gif',
+                                  ),
                                 ),
                               ],
                             ),

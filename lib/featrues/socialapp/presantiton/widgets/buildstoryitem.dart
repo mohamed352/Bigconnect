@@ -5,7 +5,10 @@ import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/data/models/storymodel.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/story/viewstory.dart';
+import 'package:socialapp/featrues/socialapp/presantiton/style/appcolor.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/animationsroutes.dart';
+import 'package:socialapp/featrues/socialapp/presantiton/widgets/modeltostory.dart';
+import 'package:socialapp/featrues/socialapp/presantiton/widgets/myalertdialog.dart';
 
 import '../../../../config/endpoints.dart';
 
@@ -44,9 +47,9 @@ class StoryItem extends StatelessWidget {
               enableFeedback: true,
               onTap: () {
                 if (index == 0) {
-                  cubit.storyimage(
-                    context,
-                  );
+                  modelToStory(context);
+
+                  
                 } else {
                   Navigator.of(context).push(DoubleAnimaitonsRoute(
                       page: ViewStory(

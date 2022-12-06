@@ -30,16 +30,17 @@ class ProfileStoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .where('uid', isEqualTo: index != 0 ? model.uid : uidforall)
+            .doc(index != 0 ? model.uid : uidforall)
+            //.where('uid', isEqualTo: index != 0 ? model.uid : uidforall)
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: LottieBuilder.asset(AppImageAssets.loading));
           } else {
-            var snap = snapshot.data!.docs[0].data() as Map<String, dynamic>;
+            var snap = snapshot.data!.data() as Map<String, dynamic>;
             return Material(
               type: MaterialType.transparency,
               child: Container(

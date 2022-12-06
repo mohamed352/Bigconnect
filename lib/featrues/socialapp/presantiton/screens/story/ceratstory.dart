@@ -9,14 +9,18 @@ import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.d
 
 class CeratStory extends StatelessWidget {
   final PaletteGenerator paletteGenerator;
-  const CeratStory({super.key, required this.paletteGenerator});
+
+  const CeratStory({
+    super.key,
+    required this.paletteGenerator,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialappCubit, SocialappState>(
       listener: (context, state) async {
         if (state is UploadStoryImageDone) {
-          await SocialappCubit.get(context). playLoadingAudio(context);
+          await SocialappCubit.get(context).playLoadingAudio(context);
         }
       },
       builder: (context, state) {

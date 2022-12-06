@@ -103,6 +103,26 @@ Widget buildcommentitem(
                           const SizedBox(
                             height: 5,
                           ),
+                        if (model.gif != null)
+                          GestureDetector(
+                            onLongPress: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              modelCommentSheet(
+                                  model, snap['image'], context, index, postId);
+                            },
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: Image.network(
+                                  alignment: AlignmentDirectional.topStart,
+                                  isAntiAlias: true,
+                                  fit: BoxFit.contain,
+                                  matchTextDirection: true,
+                                  '${model.gif}'),
+                            ),
+                          ),
+                        const SizedBox(
+                          height: 7,
+                        ),
                         if (model.commentimage != '')
                           GestureDetector(
                             onLongPress: () {

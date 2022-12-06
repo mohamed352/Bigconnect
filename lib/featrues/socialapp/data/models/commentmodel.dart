@@ -8,12 +8,11 @@ class Comments {
   String? name;
   String? commentimage;
   String? commentid;
+   dynamic gif;
   List<dynamic> comments = [];
   bool? show;
 
-  //int nbOfLikes = 0;
-  //int nbOfComments = 0;
-  //bool? islikes1;
+  
 
   Comments(
       {this.datatime,
@@ -24,7 +23,8 @@ class Comments {
       this.commentimage,
       this.commentid,
       this.show,
-      this.token
+      this.token,
+      this.gif,
 
       // this.islikes1
       });
@@ -32,8 +32,9 @@ class Comments {
     Map<String, dynamic> json,
   ) {
     name = json['name'];
+     gif = json['gif'];
     token = json['token'];
-     show = json['show'];
+    show = json['show'];
     datatime = json['datatime'];
     text = json['text'];
     uid = json['uid'];
@@ -50,7 +51,7 @@ class Comments {
   Map<String, dynamic> tomap() {
     return {
       'name': name,
-      'token' : token,
+      'token': token,
       'datatime': datatime,
       'text': text,
       'uid': uid,
@@ -58,7 +59,8 @@ class Comments {
       'image': image,
       'commentid': commentid,
       'comments': comments,
-      'show' :show,
+      'show': show,
+      'gif' :gif,
     };
   }
 }

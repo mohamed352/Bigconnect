@@ -3,14 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 
-Widget commentsend({
-  required context,
-  required TextEditingController commenControler,
-  required String postId,
- required String token
-}) {
+Widget commentsend(
+    {required context,
+    required TextEditingController commenControler,
+    required String postId,
+    required String token}) {
   var cubit = SocialappCubit.get(context);
-   File? commentimage = cubit.commentimage;
+  File? commentimage = cubit.commentimage;
   return Positioned(
     bottom: 0,
     child: SizedBox(
@@ -23,8 +22,23 @@ Widget commentsend({
               border: Border(top: BorderSide(color: Colors.grey)),
             ),
             child: Row(
-              // crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                InkWell(
+                  onTap: () {
+                    cubit.sendGif(context: context,postid: postId,tokenfcm: token,text: commenControler.text);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(
+                      top: 5,
+                      left: 5,
+                    ),
+                    child: Icon(
+                      Icons.gif,
+                      size: 40,
+                    ),
+                  ),
+                ),
                 Container(
                   height: 43,
                   padding: const EdgeInsets.only(
@@ -32,7 +46,7 @@ Widget commentsend({
                     left: 6,
                     right: 6,
                   ),
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width * 0.875,
                   child: TextFormField(
                     controller: commenControler,
                     keyboardType: TextInputType.text,
@@ -43,21 +57,26 @@ Widget commentsend({
                           : Colors.grey.shade700,
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(style: BorderStyle.none)),
+                          borderSide:
+                              const BorderSide(style: BorderStyle.none)),
                       errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(style: BorderStyle.none)),
+                          borderSide:
+                              const BorderSide(style: BorderStyle.none)),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(style: BorderStyle.none)),
+                          borderSide:
+                              const BorderSide(style: BorderStyle.none)),
                       disabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
-                          borderSide: const BorderSide(style: BorderStyle.none)),
+                          borderSide:
+                              const BorderSide(style: BorderStyle.none)),
                       hintText: 'Write a comment',
                       hintStyle: TextStyle(
                           fontSize: 14,
-                          color:
-                              cubit.isdark == false ? Colors.grey : Colors.white),
+                          color: cubit.isdark == false
+                              ? Colors.grey
+                              : Colors.white),
                       suffixIcon: IconButton(
                         onPressed: () {
                           FocusScope.of(context).requestFocus(FocusNode());
@@ -71,7 +90,12 @@ Widget commentsend({
                             cubit.postcomment(
                                 postid: postId,
                                 tokenfcm: token,
-                                text: commenControler.text);
+                                text: commenControler.text,
+                            
+
+
+
+                                );
                           }
                         },
                         icon: const Icon(
