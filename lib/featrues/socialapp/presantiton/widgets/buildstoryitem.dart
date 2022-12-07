@@ -27,6 +27,7 @@ class StoryItem extends StatelessWidget {
   ) {
     var cubit = SocialappCubit.get(context);
     final list = cubit.stortlist;
+    final String = 'zmm';
 
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
