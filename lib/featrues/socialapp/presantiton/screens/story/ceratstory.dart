@@ -58,7 +58,8 @@ class CeratStory extends StatelessWidget {
                                       },
                                       icon: Icon(
                                         Icons.close,
-                                        color: Colors.white.withOpacity(0.8),
+                                        color: paletteGenerator.darkMutedColor
+                                            ?.color, // Colors.white.withOpacity(0.8),
                                         size: 35,
                                       )),
                                 ],

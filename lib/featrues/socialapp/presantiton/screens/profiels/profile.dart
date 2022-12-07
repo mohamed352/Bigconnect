@@ -31,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
     return BlocConsumer<SocialappCubit, SocialappState>(
       listener: (context, state) async {
         if (state is SocialTest) {
-          await  SocialappCubit.get(context). playLikeSound();
+          await SocialappCubit.get(context).playLikeSound();
         }
         if (state is DeletPostDone) {
           showSnackBar(
@@ -338,7 +338,6 @@ class ProfileScreen extends StatelessWidget {
                             stremFriends(
                                 otheruid: otheruid,
                                 uid: snap['uid'],
-                                
                                 friends: snap['friends'],
                                 context: context),
                             if (cubit.usermodel!.friends.length - 1 > 0)
@@ -353,8 +352,9 @@ class ProfileScreen extends StatelessWidget {
                             StreamBuilder<QuerySnapshot>(
                                 stream: FirebaseFirestore.instance
                                     .collection('posts')
+                                    //.orderBy('datatime', descending: true)
                                     .where('uid', isEqualTo: otheruid)
-                                    // .orderBy('datatime', descending: true)
+                                    
                                     .snapshots(),
                                 builder: (context, snapshot2) {
                                   if (!snapshot2.hasData) {
@@ -377,13 +377,13 @@ class ProfileScreen extends StatelessWidget {
                                           return buildpostitem(
                                             context,
                                             index,
-                                            name: snap2['name'],
+                                            
                                             datatime: snap2['datatime'],
                                             postId: snap2['postid'],
                                             text: snap2['text'],
                                             tokenpost: snap2['token'],
                                             uid1: snap2['uid'],
-                                            image: snap2['image'],
+                                      
                                             postimage: snap2['postimage'],
                                             likes: snap2['likes'],
                                             show: snap2['show'],

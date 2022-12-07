@@ -184,12 +184,12 @@ class Feedsscreen extends StatelessWidget {
                             GetPosts model = cubit.post[index];
 
                             return buildpostitem(context, index,
-                                name: model.name,
+                                
                                 tokenpost: model.token!,
                                 datatime: model.datatime,
                                 text: model.text,
                                 uid1: model.uid,
-                                image: model.image,
+                              
                                 postimage: model.postimage,
                                 likes: model.likes,
                                 postId: model.postid,

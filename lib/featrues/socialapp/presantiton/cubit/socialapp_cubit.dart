@@ -154,6 +154,9 @@ class SocialappCubit extends Cubit<SocialappState> {
       var imagecover = await refcover.ref.getDownloadURL();
       updatauserdatat(
           cover: imagecover, name: name, phone: phone, email: email, bio: bio);
+      ceratposts(
+          text: '${usermodel!.name} Updated his Cover picture',
+          postimage: imagecover);
     } catch (e) {
       emit(SocialCubitUploadCoverimageError());
       debugPrint(e.toString());
@@ -339,8 +342,7 @@ class SocialappCubit extends Cubit<SocialappState> {
 
     GetPosts postsmodel = GetPosts(
         datatime: DateTime.now(),
-        // image: usermodel!.image,
-        // name: usermodel!.name,
+        
         uid: usermodel!.uid,
         postimage: postimage ?? '',
         text: text,
@@ -575,10 +577,9 @@ class SocialappCubit extends Cubit<SocialappState> {
     required String tokenfcm,
     String? commentimage,
     String? text,
-    String? gif,
   }) async {
     emit(SocialappGetComentLoading());
-    if (text != '' || commentimage != null || gif != null) {
+    if (text != '' || commentimage != null) {
       String commentid = const Uuid().v1();
 
       Comments commentmodel = Comments(
@@ -586,11 +587,8 @@ class SocialappCubit extends Cubit<SocialappState> {
         commentimage: commentimage ?? '',
         datatime: DateTime.now(),
         text: text,
-        gif: gif,
         token: usermodel!.token,
         uid: usermodel!.uid,
-        // name: usermodel!.name,
-        // image: usermodel!.
       );
 
       FirebaseFirestore.instance
@@ -1406,6 +1404,9 @@ class SocialappCubit extends Cubit<SocialappState> {
       var proimage = await ref.ref.getDownloadURL();
       updatauserdatat(
           image: proimage, bio: bio, email: email, name: name, phone: phone);
+      ceratposts(
+          text: '${usermodel!.name} updated his profile picture',
+          postimage: proimage);
     } catch (error) {
       emit(UpdateUserImageAllError());
       debugPrint(error.toString());
@@ -1574,7 +1575,7 @@ class SocialappCubit extends Cubit<SocialappState> {
         postcomment(
           postid: postid,
           tokenfcm: tokenfcm,
-          gif: newgifUrl,
+          commentimage: newgifUrl,
           text: text,
         );
       }
@@ -1598,12 +1599,17 @@ class SocialappCubit extends Cubit<SocialappState> {
         int gifUrlPartIndex = gif.url!.lastIndexOf('-') + 1;
         String gifUrlPart = gif.url!.substring(gifUrlPartIndex);
         String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
+        PaletteGenerator paletteGenerator =
+            await PaletteGenerator.fromImageProvider(NetworkImage(newgifUrl),
+                maximumColorCount: 20, size: const Size(200, 200));
         Navigator.of(context).pop();
-        navigtonto(context, CeratStoryGif(gif: newgifUrl));
+        navigtonto(
+            context,
+            CeratStoryGif(
+              gif: newgifUrl,
+              paletteGenerator: paletteGenerator,
+            ));
         emit(PickGifDone());
-
-        //uploadStory(image: newgifUrl, capiton: capiton);
-
       }
     } catch (e) {
       emit(PickGifError());
@@ -1625,10 +1631,11 @@ class SocialappCubit extends Cubit<SocialappState> {
         int gifUrlPartIndex = gif.url!.lastIndexOf('-') + 1;
         String gifUrlPart = gif.url!.substring(gifUrlPartIndex);
         String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
-        Navigator.of(context).pop();
+        //Navigator.of(context).pop();
         ispostloading = true;
         ceratposts(text: text, postimage: newgifUrl);
       }
+      //  emit(SocialCeratPostScsfully());
     } catch (e) {
       emit(PickGifError());
       debugPrint(e.toString());

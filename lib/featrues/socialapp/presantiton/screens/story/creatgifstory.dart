@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/style/appcolor.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/style/themapp.dart';
 
 class CeratStoryGif extends StatelessWidget {
   final String gif;
+  final PaletteGenerator paletteGenerator;
 
-  const CeratStoryGif({
-    super.key,
-    required this.gif,
-  });
+  const CeratStoryGif(
+      {super.key, required this.gif, required this.paletteGenerator});
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +22,17 @@ class CeratStoryGif extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        SystemUiOverlayStyle curantstyle = SystemUiOverlayStyle.dark.copyWith(
+            statusBarColor: paletteGenerator.dominantColor?.color,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.light);
         TextEditingController controller = TextEditingController();
         var cubit = SocialappCubit.get(context);
 
         return AnnotatedRegion(
-          value: valuedark,
+          value: curantstyle,
           child: Scaffold(
-              backgroundColor: AppColors.dark,
+              backgroundColor: paletteGenerator.dominantColor?.color,
               body: SafeArea(
                 child: Stack(
                   alignment: AlignmentDirectional.bottomCenter,
@@ -42,14 +45,17 @@ class CeratStoryGif extends StatelessWidget {
                             children: [
                               cubit.isloadingStory
                                   ? LottieBuilder.asset(AppImageAssets.loading)
-                                  : Image.network(gif,),
+                                  : Image.network(
+                                      gif,
+                                    ),
                               IconButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                   icon: Icon(
                                     Icons.close,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: paletteGenerator.darkMutedColor
+                                        ?.color, // Colors.white.withOpacity(0.8),
                                     size: 35,
                                   )),
                             ],
@@ -70,7 +76,7 @@ class CeratStoryGif extends StatelessWidget {
                           color: Colors.white,
                         ),
                         decoration: InputDecoration(
-                          fillColor: Colors.grey.shade800,
+                          fillColor: paletteGenerator.darkMutedColor?.color,
                           filled: true,
                           border: InputBorder.none,
                           hintText: 'Write here',

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 
@@ -26,7 +25,11 @@ Widget commentsend(
               children: [
                 InkWell(
                   onTap: () {
-                    cubit.sendGif(context: context,postid: postId,tokenfcm: token,text: commenControler.text);
+                    cubit.sendGif(
+                        context: context,
+                        postid: postId,
+                        tokenfcm: token,
+                        text: commenControler.text);
                   },
                   child: const Padding(
                     padding: EdgeInsets.only(
@@ -34,7 +37,8 @@ Widget commentsend(
                       left: 5,
                     ),
                     child: Icon(
-                      Icons.gif,
+                      Icons.gif_box,
+                      color: Colors.red,
                       size: 40,
                     ),
                   ),
@@ -88,14 +92,10 @@ Widget commentsend(
                                 text: commenControler.text);
                           } else {
                             cubit.postcomment(
-                                postid: postId,
-                                tokenfcm: token,
-                                text: commenControler.text,
-                            
-
-
-
-                                );
+                              postid: postId,
+                              tokenfcm: token,
+                              text: commenControler.text,
+                            );
                           }
                         },
                         icon: const Icon(

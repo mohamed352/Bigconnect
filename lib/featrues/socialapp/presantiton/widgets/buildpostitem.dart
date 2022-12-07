@@ -25,13 +25,12 @@ Widget buildpostitem(
   // GetPosts model,
   context,
   index, {
-  required String? name,
+  
   required String? postId,
   // ignore: prefer_typing_uninitialized_variables
   required final datatime,
   required String? text,
   required String? uid1,
-  required String? image,
   required String? postimage,
   required List<dynamic> likes,
   required bool? show,

@@ -60,23 +60,24 @@ Widget buildcommentitem(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InkWell(
-                          onTap: () {
-                            navigtonto(
-                                context,
-                                ProfileScreen(
-                                  otheruid: model.uid,
-                                ));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 7),
-                            child: Text(
-                              snap['name'],
-                              style: const TextStyle(
-                                  height: 1.4, fontWeight: FontWeight.bold),
+                        if (model.text == '')
+                          InkWell(
+                            onTap: () {
+                              navigtonto(
+                                  context,
+                                  ProfileScreen(
+                                    otheruid: model.uid,
+                                  ));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 7),
+                              child: Text(
+                                snap['name'],
+                                style: const TextStyle(
+                                    height: 1.4, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
-                        ),
                         if (model.text != '')
                           GestureDetector(
                             onLongPress: () {
@@ -85,44 +86,40 @@ Widget buildcommentitem(
                                   model, snap['image'], context, index, postId);
                             },
                             child: Container(
-                              //  color: AppColors.grayshade,
-                              padding: const EdgeInsets.all(15),
+                              margin: const EdgeInsets.symmetric(vertical: 5),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                   color: cubit.isdark == false
                                       ? AppColors.grayshade
-                                      : Colors.grey.shade700,
-                                  borderRadius: BorderRadius.circular(15)),
-
-                              child: Text(
-                                '${model.text}',
-                                style: const TextStyle(height: 1.3),
+                                      : Colors.grey.shade800,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      navigtonto(
+                                          context,
+                                          ProfileScreen(
+                                            otheruid: model.uid,
+                                          ));
+                                    },
+                                    child: Text(
+                                      snap['name'],
+                                      style: const TextStyle(
+                                          height: 1,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${model.text}',
+                                    style: const TextStyle(height: 1.3),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        if (model.text != '' && model.commentimage != '')
-                          const SizedBox(
-                            height: 5,
-                          ),
-                        if (model.gif != null)
-                          GestureDetector(
-                            onLongPress: () {
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              modelCommentSheet(
-                                  model, snap['image'], context, index, postId);
-                            },
-                            child: AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: Image.network(
-                                  alignment: AlignmentDirectional.topStart,
-                                  isAntiAlias: true,
-                                  fit: BoxFit.contain,
-                                  matchTextDirection: true,
-                                  '${model.gif}'),
-                            ),
-                          ),
-                        const SizedBox(
-                          height: 7,
-                        ),
+                        //if (model.text != '' && model.commentimage != '')
                         if (model.commentimage != '')
                           GestureDetector(
                             onLongPress: () {
@@ -142,18 +139,15 @@ Widget buildcommentitem(
                                   paletteGenerator: paletteGenerator);
                             },
                             child: AspectRatio(
-                              aspectRatio: 16 / 9,
+                              aspectRatio: 4 / 3,
                               child: Image.network(
                                   alignment: AlignmentDirectional.topStart,
                                   isAntiAlias: true,
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.cover,
                                   matchTextDirection: true,
                                   '${model.commentimage}'),
                             ),
                           ),
-                        const SizedBox(
-                          height: 7,
-                        ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -207,7 +201,7 @@ Widget buildcommentitem(
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
