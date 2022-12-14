@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:like_button/like_button.dart';
+import 'package:linkfy_text/linkfy_text.dart';
 import 'package:lottie/lottie.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:socialapp/config/endpoints.dart';
@@ -25,7 +26,6 @@ Widget buildpostitem(
   // GetPosts model,
   context,
   index, {
-  
   required String? postId,
   // ignore: prefer_typing_uninitialized_variables
   required final datatime,
@@ -34,6 +34,7 @@ Widget buildpostitem(
   required String? postimage,
   required List<dynamic> likes,
   required bool? show,
+  required bool? vip,
   required int commentint,
   //?post id or mypostid in cubit
   required List postid,
@@ -44,7 +45,7 @@ Widget buildpostitem(
 
   return Conditional.single(
     context: context,
-    conditionBuilder: (context) => show != true && showpostfriend,
+    conditionBuilder: (context) => show != true && showpostfriend ||vip ==true,
     widgetBuilder: (context) {
       return StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -92,25 +93,24 @@ Widget buildpostitem(
                                             otheruid: uid1,
                                           ));
                                     },
-                                    child: Text(
-                                      snap['name'],
-                                      style: const TextStyle(
-                                        height: 1.4,
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: Text(
+                                        snap['name'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          height: 1.4,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  const Icon(
-                                    Icons.check_circle,
-                                    color: AppColors.blue,
-                                    size: 15.0,
                                   ),
                                 ],
                               ),
                               Text(
-                                getTimeDifferenceFromNow(datatime.toDate(),true),
+                                getTimeDifferenceFromNow(
+                                    datatime.toDate(), true),
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption!
@@ -166,12 +166,26 @@ Widget buildpostitem(
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            '$text',
-                            style: const TextStyle(height: 1.3),
-                          ),
-                        ),
+                            padding: const EdgeInsets.all(10),
+                            child: LinkifyText(
+                              '$text',
+                              linkStyle: const TextStyle(
+                                  height: 1.3, color: Colors.blue),
+                              linkTypes: const [
+                                LinkType.url,
+                                LinkType.hashTag,
+                                LinkType.email,
+                                LinkType.userTag
+                              ],
+                              onTap: (link) {
+                        
+                              },
+                            )
+                            //  Text(
+                            //   '$text',
+                            //   style: const TextStyle(height: 1.3),
+                            // ),
+                            ),
                       ),
                     if (postimage == '')
                       const SizedBox(

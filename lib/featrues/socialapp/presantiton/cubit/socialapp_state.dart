@@ -128,6 +128,7 @@ class Socialsendcommentliksdone1 extends SocialappState {}
 class SocialappGetComentScsues extends SocialappState {}
 
 class SocialappGetComentLoading extends SocialappState {}
+class ChangeState extends SocialappState {}
 
 class SocialappGetComentDeletScsues extends SocialappState {}
 

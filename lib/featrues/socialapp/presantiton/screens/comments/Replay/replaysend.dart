@@ -2,13 +2,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 
-Widget commentsend(
+Widget replaySend(
     {required context,
-    required TextEditingController commenControler,
+    required TextEditingController replayControler,
     required String postId,
+    required String commentname,
+    required String commentid,
+    required FocusNode focusNode,
     required String token}) {
   var cubit = SocialappCubit.get(context);
   File? commentimage = cubit.commentimage;
+
   return Positioned(
     bottom: 0,
     child: SizedBox(
@@ -25,11 +29,12 @@ Widget commentsend(
               children: [
                 InkWell(
                   onTap: () {
-                    cubit.sendGif(
+                    cubit.sendGiftoreplay(
                         context: context,
                         postid: postId,
+                        commentname: commentname,
                         tokenfcm: token,
-                        text: commenControler.text);
+                        commentid: commentid);
                   },
                   child: const Padding(
                     padding: EdgeInsets.only(
@@ -51,10 +56,14 @@ Widget commentsend(
                     right: 6,
                   ),
                   width: MediaQuery.of(context).size.width * 0.875,
-                  child: TextFormField(
-                    controller: commenControler,
+                  child: TextField(
+                    controller: replayControler,
                     keyboardType: TextInputType.text,
+                    enableInteractiveSelection: true,
                     maxLines: 15,
+                    autofocus: true,
+                    enableSuggestions: true,
+                    focusNode: focusNode,
                     minLines: 1,
                     decoration: InputDecoration(
                       filled: true,
@@ -77,27 +86,29 @@ Widget commentsend(
                           borderRadius: BorderRadius.circular(20),
                           borderSide:
                               const BorderSide(style: BorderStyle.none)),
-                      hintText: 'Write a comment',
+                      hintText: '@$commentname', //'Write a comment',
                       hintStyle: TextStyle(
-                          fontSize: 14,
-                          color: cubit.isdark == false
-                              ? Colors.grey
-                              : Colors.white),
+                          fontSize: 16,
+                          color: Colors.white,
+                          backgroundColor: Colors.blue.shade400),
                       suffixIcon: IconButton(
                         onPressed: () {
                           FocusScope.of(context).requestFocus(FocusNode());
                           cubit.iscommentloading = true;
                           if (commentimage != null) {
-                            cubit.uploadcommentcamerimage(
-                                postid: postId,
+                            cubit.uploadreplaycamerimage(
+                                text: replayControler.text,
                                 token: token,
-                                text: commenControler.text);
+                                postid: postId,
+                                commentname: commentname,
+                                commentid: commentid);
                           } else {
-                            cubit.postcomment(
-                              postid: postId,
-                              tokenfcm: token,
-                              text: commenControler.text,
-                            );
+                            cubit.postreplay(
+                                postid: postId,
+                                tokenfcm: token,
+                                commentname: commentname,
+                                text: replayControler.text,
+                                commentid: commentid);
                           }
                         },
                         icon: const Icon(

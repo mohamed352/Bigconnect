@@ -5,8 +5,10 @@ import 'package:lottie/lottie.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/data/models/commentmodel.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
+import 'package:socialapp/featrues/socialapp/presantiton/screens/comments/listcomment.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/comments/streamcomment.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/myalertdialog.dart';
+import 'commentsend.dart';
 
 TextEditingController commenControler = TextEditingController();
 Future<dynamic> addcommenttest(
@@ -56,7 +58,7 @@ Future<dynamic> addcommenttest(
                     } else {
                       cubit.comments = [];
                       cubit.commentid = [];
-                      // cubit.commentimage = null;
+
                       for (var element in snapshot.data!.docs) {
                         cubit.commentid.add(element.id);
 
@@ -65,11 +67,21 @@ Future<dynamic> addcommenttest(
                     }
 
                     return streamcomment(
+                      context: context,
+                      appBarTitle: 'Commments',
+                      comments: cubit.comments,
+                      commenControler: commenControler,
+                      postId: postId,
+                      snapshot: snapshot,
+                      commentsend: commentsend(
                         context: context,
                         commenControler: commenControler,
                         postId: postId,
-                        snapshot: snapshot,
-                        tokenpost: tokenpost);
+                        token: tokenpost,
+                      ),
+                      tokenpost: tokenpost,
+                      listview: listcomment(postId: postId, context: context,tokenpost: tokenpost),
+                    );
                   }));
         },
       );

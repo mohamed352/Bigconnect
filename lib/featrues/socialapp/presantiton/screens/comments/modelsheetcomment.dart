@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:socialapp/config/endpoints.dart';
-import 'package:socialapp/featrues/socialapp/data/models/commentmodel.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/comments/editcomment.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/style/appcolor.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/myalertdialog.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/widgets/navgations.dart';
 
-Future<dynamic> modelCommentSheet(
-  Comments model,
-  String image,
-  context,
-  index,
-  postId,
-) async {
+Future<dynamic> modelCommentSheet({
+  required context,
+  required int index,
+  required String? postId,
+  required bool? show,
+  required String? uid,
+  bool? isreplay,
+  String? commentidforreplay,
+  required String? text,
+  required String image,
+  required String? commentimage,
+  required dynamic datatime,
+  required List? comments,
+  required String? commentid,
+  required String? tokenfcm,
+}) async {
   var cubit = SocialappCubit.get(context);
   return showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     builder: (context) => SizedBox(
-      height: uidforall == model.uid
+      height: uidforall == uid
           ? MediaQuery.of(context).size.height * 0.36
           : MediaQuery.of(context).size.height * 0.21,
       child: SingleChildScrollView(
@@ -35,16 +43,23 @@ Future<dynamic> modelCommentSheet(
                 children: [
                   CircleAvatar(
                     radius: 22,
-                    backgroundColor: model.comments.contains(uidforall)
+                    backgroundColor: comments!.contains(uidforall)
                         ? Colors.blue
                         : Colors.grey,
                     child: IconButton(
                         onPressed: () {
-                          cubit.likecomment(
-                              tokenfcm: '${model.token}',
-                              postid: postId,
-                              comments: model.comments,
-                              commentid: cubit.commentid[index]);
+                          isreplay == true
+                              ? cubit.likereplay(
+                                  tokenfcm: tokenfcm!,
+                                  postid: postId!,
+                                  replayid: '$commentid',
+                                  comments: comments,
+                                  commentid: '$commentidforreplay')
+                              : cubit.likecomment(
+                                  tokenfcm: tokenfcm!,
+                                  postid: postId!,
+                                  comments: comments,
+                                  commentid: cubit.commentid[index]);
                         },
                         icon: const Icon(
                           Icons.thumb_up_alt,
@@ -54,16 +69,19 @@ Future<dynamic> modelCommentSheet(
                 ],
               ),
             ),
-            if (uidforall == model.uid)
+            if (uidforall == uid)
               Container(
                 color: AppColors.grayshade,
                 height: 1,
                 width: double.infinity,
               ),
-            if (uidforall == model.uid)
+            if (uidforall == uid)
               InkWell(
                 onTap: () {
-                  cubit.deletComment(postId, cubit.commentid[index]);
+                  isreplay == true
+                      ? cubit.deletReplay(
+                          postId!, commentidforreplay!, commentid!)
+                      : cubit.deletComment(postId!, cubit.commentid[index]);
                   Navigator.of(context).pop();
                 },
                 child: Padding(
@@ -85,23 +103,23 @@ Future<dynamic> modelCommentSheet(
                   ),
                 ),
               ),
-            if (uidforall == model.uid)
+            if (uidforall == uid && isreplay != true)
               Container(
                 color: AppColors.grayshade,
                 height: 1,
                 width: double.infinity,
               ),
-            if (uidforall == model.uid)
+            if (uidforall == uid && isreplay != true)
               InkWell(
                 onTap: () {
                   Navigator.of(context).pop();
                   navigtonto(
                       context,
                       EditComment(
-                        commentId: model.commentid!,
+                        commentId: commentid!,
                         image: image,
-                        postid: postId,
-                        text: model.text!,
+                        postid: postId!,
+                        text: text!,
                       ));
                 },
                 child: Padding(
@@ -130,8 +148,14 @@ Future<dynamic> modelCommentSheet(
             ),
             InkWell(
               onTap: () {
-                cubit.hidecomment(
-                    postId: postId, commentId: cubit.commentid[index]);
+                isreplay == true
+                    ? cubit.hideReplay(
+                        postId: postId!,
+                        replayid: commentid!,
+                        commentId: commentidforreplay!)
+                    : cubit.hidecomment(
+                        postId: postId!, commentId: cubit.commentid[index]);
+                Navigator.of(context).pop();
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

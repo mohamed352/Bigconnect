@@ -13,4 +13,5 @@ class AppImageAssets {
   static const String google = "$rootimage/google.png";
   static const String nodate = "$rootimage/nodate.png";
   static const String splach = "$rootimage/splach.png";
+  static const String sleep = "$rootlottie/sleep.json";
 }

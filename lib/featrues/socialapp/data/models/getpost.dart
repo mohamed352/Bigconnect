@@ -3,7 +3,7 @@ class GetPosts {
   late final datatime;
   String? text;
   String? uid;
-
+  bool? vip;
   String? postimage;
   List<dynamic> likes = [];
   bool? show;
@@ -22,11 +22,14 @@ class GetPosts {
     this.commentint = 0,
     this.token,
     this.postid,
+   required this.vip,
+    
 
     // this.islikes1
   });
   GetPosts.fromjason(Map<String, dynamic> json) {
     postid = json['postid'];
+    vip = json['vip'];
 
     commentint = json['commentint'];
     datatime = json['datatime'];
@@ -51,6 +54,7 @@ class GetPosts {
     return {
       'datatime': datatime,
       'text': text,
+      'vip' :vip,
       'uid': uid,
       'postimage': postimage,
 

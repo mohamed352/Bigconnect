@@ -20,6 +20,7 @@ import 'package:socialapp/featrues/socialapp/data/models/commentmodel.dart';
 import 'package:socialapp/featrues/socialapp/data/models/friends.dart';
 import 'package:socialapp/featrues/socialapp/data/models/getpost.dart';
 import 'package:socialapp/featrues/socialapp/data/models/notifications.dart';
+import 'package:socialapp/featrues/socialapp/data/models/reply.dart';
 import 'package:socialapp/featrues/socialapp/data/models/storymodel.dart';
 import 'package:socialapp/featrues/socialapp/data/models/userdata.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/screens/Notfications/notficatios.dart';
@@ -93,7 +94,7 @@ class SocialappCubit extends Cubit<SocialappState> {
 
   List<Text> titles = [
     const Text(
-      'Feeds',
+      'Bigconnect',
       style: TextStyle(color: AppColors.blue, fontSize: 23),
     ),
     const Text(
@@ -105,6 +106,20 @@ class SocialappCubit extends Cubit<SocialappState> {
       style: TextStyle(fontSize: 23),
     ),
   ];
+  Future<bool> getreplay({
+    required String postId,
+    required String commentid,
+  }) async {
+    var replay = await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .doc(commentid)
+        .collection('Replaies')
+        .get();
+    return replay.docs.isNotEmpty;
+  }
+
   void changeindex(int index) {
     emit(SocialappInitial());
     currentindex = index;
@@ -198,9 +213,7 @@ class SocialappCubit extends Cubit<SocialappState> {
   Future<void> playLoadingAudioEdit(context) async {
     try {
       final audioplayer = AudioPlayer();
-      final player = AudioCache(prefix: 'assets/audio/');
-      final url = await player.load('loading.mp3');
-      audioplayer.setSourceUrl(url.path);
+
       audioplayer.play(AssetSource('audio/loading.mp3'));
       SocialappCubit.get(context).ispostloading = false;
       Navigator.of(context).pop();
@@ -218,9 +231,6 @@ class SocialappCubit extends Cubit<SocialappState> {
   Future<void> playLikeSound() async {
     try {
       final audioplayer = AudioPlayer();
-      final player = AudioCache(prefix: 'assets/audio/');
-      final url = await player.load('like.mp3');
-      audioplayer.setSourceUrl(url.path);
 
       audioplayer.play(AssetSource('audio/like.mp3'));
       emit(AudioSoundDone());
@@ -234,10 +244,8 @@ class SocialappCubit extends Cubit<SocialappState> {
       context, TextEditingController commenControler) async {
     try {
       final audioplayer = AudioPlayer();
-      final player = AudioCache(prefix: 'assets/audio/');
-      final url = await player.load('loading.mp3');
-      audioplayer.setSourceUrl(url.path);
-      audioplayer.play(AssetSource('audio/loading.mp3'));
+      await audioplayer.play(AssetSource("audio/loading.mp3"));
+
       SocialappCubit.get(context).commentimage = null;
       commenControler.text = '';
       SocialappCubit.get(context).iscommentloading = false;
@@ -251,9 +259,7 @@ class SocialappCubit extends Cubit<SocialappState> {
   Future<void> playLoadingAudio(context) async {
     try {
       final audioplayer = AudioPlayer();
-      final player = AudioCache(prefix: 'assets/audio/');
-      final url = await player.load('loading.mp3');
-      audioplayer.setSourceUrl(url.path);
+
       audioplayer.play(AssetSource('audio/loading.mp3'));
       SocialappCubit.get(context).ispostloading = false;
       SocialappCubit.get(context).isloadingStory = false;
@@ -269,9 +275,7 @@ class SocialappCubit extends Cubit<SocialappState> {
   Future<void> playLoadingAudioEditProfile(context) async {
     try {
       final audioplayer = AudioPlayer();
-      final player = AudioCache(prefix: 'assets/audio/');
-      final url = await player.load('loading.mp3');
-      audioplayer.setSourceUrl(url.path);
+
       audioplayer.play(AssetSource('audio/loading.mp3'));
       SocialappCubit.get(context).isEditProfileLoading = false;
       showSnackBar(
@@ -342,10 +346,10 @@ class SocialappCubit extends Cubit<SocialappState> {
 
     GetPosts postsmodel = GetPosts(
         datatime: DateTime.now(),
-        
         uid: usermodel!.uid,
         postimage: postimage ?? '',
         text: text,
+        vip: false,
         commentint: 0,
         token: usermodel!.token,
         postid: postId);
@@ -458,6 +462,7 @@ class SocialappCubit extends Cubit<SocialappState> {
   List<String> posid = [];
   List<String> commentid = [];
   List<String> mypostid = [];
+  List<String> replaysid = [];
 
   Future<void> getposts({String? uid1}) async {
     if (uidforall != null || uid1 != null) {
@@ -522,6 +527,27 @@ class SocialappCubit extends Cubit<SocialappState> {
     }
   }
 
+  Future<void> hideReplay(
+      {required String postId,
+      required String replayid,
+      required String commentId}) async {
+    emit(HideCommentLoading());
+    try {
+      FirebaseFirestore.instance
+          .collection('posts')
+          .doc(postId)
+          .collection('comments')
+          .doc(commentId)
+          .collection('Replaies')
+          .doc(replayid)
+          .update({'show': true});
+      emit(HideCommentDone());
+    } catch (e) {
+      emit(HideCommentError());
+      debugPrint(e.toString());
+    }
+  }
+
   Future<void> likepost(
     String postid,
     List likes,
@@ -571,6 +597,11 @@ class SocialappCubit extends Cubit<SocialappState> {
   }
 
   List<Comments> comments = [];
+  List<Replays> replays = [];
+
+  void changestate() {
+    emit(ChangeState());
+  }
 
   Future<void> postcomment({
     required String postid,
@@ -625,6 +656,51 @@ class SocialappCubit extends Cubit<SocialappState> {
     }
   }
 
+  Future<void> postreplay({
+    required String postid,
+    required String tokenfcm,
+    required String commentid,
+    required String commentname,
+    String? commentimage,
+    String? text,
+  }) async {
+    emit(SocialappGetComentLoading());
+
+    if (text != '' || commentimage != null) {
+      try {
+        String replayid = const Uuid().v1();
+
+        Replays model = Replays(
+          replayid: replayid,
+          commentname: commentname,
+          commentimage: commentimage ?? '',
+          datatime: DateTime.now(),
+          commentid: commentid,
+          text: text,
+          token: usermodel!.token,
+          uid: usermodel!.uid,
+        );
+
+        FirebaseFirestore.instance
+            .collection('posts')
+            .doc(postid)
+            .collection('comments')
+            .doc(commentid)
+            .collection('Replaies')
+            .doc(replayid)
+            .set(model.tomap());
+        sendfcm(
+            token: tokenfcm,
+            title: 'socialapp',
+            body: '${usermodel!.name} replay in your comment');
+        emit(SocialappGetComentScsues());
+      } catch (error) {
+        emit(SocialappGetComentError());
+        debugPrint(error.toString());
+      }
+    }
+  }
+
   bool iscommentloading = false;
 
   void uploadcommentcamerimage({
@@ -653,6 +729,33 @@ class SocialappCubit extends Cubit<SocialappState> {
       emit(SocialCeratCommentError());
       debugPrint(error.toString());
     });
+  }
+
+  Future<void> uploadreplaycamerimage({
+    required String text,
+    required String token,
+    required String postid,
+    required String commentname,
+    required String commentid,
+  }) async {
+    emit(SocialCeratCommentLoding());
+    try {
+      var ref = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('comment/${Uri.file(commentimage!.path).pathSegments.last}')
+          .putFile(commentimage!);
+      var image = await ref.ref.getDownloadURL();
+      postreplay(
+          postid: postid,
+          text: text,
+          commentname: commentname,
+          commentid: commentid,
+          commentimage: image,
+          tokenfcm: token);
+    } catch (error) {
+      emit(SocialCeratCommentError());
+      debugPrint(error.toString());
+    }
   }
 
   Future<void> likecomment({
@@ -688,6 +791,63 @@ class SocialappCubit extends Cubit<SocialappState> {
               .doc(commentid)
               .update({
             'comments': FieldValue.arrayUnion([uidforall]),
+          });
+
+          sendfcm(
+              token: tokenfcm,
+              title: 'socialapp',
+              body: '${usermodel!.name} like your comment');
+          emit(Socialsendcommentliksdone());
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          emit(Socialsendcommentlikserror());
+          print(e.toString());
+        }
+      }
+    }
+  }
+
+  Future<void> likereplay({
+    required String postid,
+    required List comments,
+    required String commentid,
+    required String replayid,
+    required String tokenfcm,
+  }) async {
+    emit(Socialsendcommentliksload());
+    var e = await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postid)
+        .collection('comments')
+        .doc(commentid)
+        .collection('Replaies')
+        .doc(replayid)
+        .get();
+    if (e.exists) {
+      try {
+        if (comments.contains(uidforall)) {
+          FirebaseFirestore.instance
+              .collection('posts')
+              .doc(postid)
+              .collection('comments')
+              .doc(commentid)
+              .collection('Replaies')
+              .doc(replayid)
+              .update({
+            'replays': FieldValue.arrayRemove([uidforall]),
+          });
+          emit(Socialsendcommentliksdone1());
+        } else {
+          FirebaseFirestore.instance
+              .collection('posts')
+              .doc(postid)
+              .collection('comments')
+              .doc(commentid)
+              .collection('Replaies')
+              .doc(replayid)
+              .update({
+            'replays': FieldValue.arrayUnion([uidforall]),
           });
 
           sendfcm(
@@ -762,6 +922,27 @@ class SocialappCubit extends Cubit<SocialappState> {
           .collection('posts')
           .doc(postid)
           .update({'commentint': (doc.data() as dynamic)['commentint'] - (1)});
+
+      emit(DeletCommentDone());
+    } catch (e) {
+      emit(DeletCommentError());
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<void> deletReplay(
+      String postid, String commenid, String replayid) async {
+    try {
+      FirebaseFirestore.instance
+          .collection('posts')
+          .doc(postid)
+          .collection('comments')
+          .doc(commenid)
+          .collection('Replaies')
+          .doc(replayid)
+          .delete();
 
       emit(DeletCommentDone());
     } catch (e) {
@@ -1575,6 +1756,40 @@ class SocialappCubit extends Cubit<SocialappState> {
         postcomment(
           postid: postid,
           tokenfcm: tokenfcm,
+          commentimage: newgifUrl,
+          text: text,
+        );
+      }
+    } catch (e) {
+      emit(PickGifError());
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> sendGiftoreplay({
+    required context,
+    required String postid,
+    required String tokenfcm,
+    required String commentname,
+    required String commentid,
+    String? text,
+  }) async {
+    try {
+      final gif = await GiphyGet.getGif(
+        context: context, //Required
+        apiKey: "NC39VKr0Eubmcp2vkKRXv5Od4yI6rmSP", //Required.
+        lang: GiphyLanguage.english,
+      );
+      if (gif != null) {
+        int gifUrlPartIndex = gif.url!.lastIndexOf('-') + 1;
+        String gifUrlPart = gif.url!.substring(gifUrlPartIndex);
+        String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
+
+        postreplay(
+          postid: postid,
+          tokenfcm: tokenfcm,
+          commentid: commentid,
+          commentname: commentname,
           commentimage: newgifUrl,
           text: text,
         );

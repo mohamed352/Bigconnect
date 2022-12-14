@@ -27,7 +27,6 @@ class StoryItem extends StatelessWidget {
   ) {
     var cubit = SocialappCubit.get(context);
     final list = cubit.stortlist;
-    
 
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
@@ -47,8 +46,6 @@ class StoryItem extends StatelessWidget {
               onTap: () {
                 if (index == 0) {
                   modelToStory(context);
-
-                  
                 } else {
                   Navigator.of(context).push(DoubleAnimaitonsRoute(
                       page: ViewStory(
@@ -125,18 +122,15 @@ class StoryItem extends StatelessWidget {
                             color: Colors.black, fontSize: 12, height: 17),
                       ),
                     if (index != 0)
-                      Container(
-                        margin: const EdgeInsets.only(left: 5),
-                        child: Text(
-                          snap['name'],
-                          maxLines: 2,
-                          style: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 12,
-                              height: 17),
-                        ),
+                      Text(
+                        snap['name'],
+                        maxLines: 1,
+                        style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 12,
+                            height: 19),
                       )
                   ],
                 ),

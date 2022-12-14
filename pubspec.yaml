@@ -40,6 +40,7 @@ dependencies:
   flutter_launcher_icons: ^0.11.0
   gallery_saver: ^2.3.2
   giphy_get: ^3.1.1
+  linkfy_text: ^1.1.5
 
 dev_dependencies:
   flutter_lints: ^2.0.0

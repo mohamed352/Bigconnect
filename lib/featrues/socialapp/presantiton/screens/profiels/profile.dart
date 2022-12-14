@@ -377,7 +377,7 @@ class ProfileScreen extends StatelessWidget {
                                           return buildpostitem(
                                             context,
                                             index,
-                                            
+                                            vip: snap2['vip'],
                                             datatime: snap2['datatime'],
                                             postId: snap2['postid'],
                                             text: snap2['text'],

@@ -92,14 +92,19 @@ class MenuScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '${cubit.usermodel?.name}',
-                            style: TextStyle(
-                                color: cubit.isdark == false
-                                    ? Colors.black
-                                    : Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: Text(
+                              '${cubit.usermodel?.name}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: cubit.isdark == false
+                                      ? Colors.black
+                                      : Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           Text(
                             'See your profile',

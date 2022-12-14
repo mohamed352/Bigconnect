@@ -1,17 +1,19 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:lottie/lottie.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/presantiton/cubit/socialapp_cubit.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/screens/comments/commentitem.dart';
-import 'package:socialapp/featrues/socialapp/presantiton/screens/comments/commentsend.dart';
 
 Widget streamcomment(
     {required context,
     required AsyncSnapshot<dynamic> snapshot,
     required String postId,
+    required String appBarTitle,
+    required List comments,
+    bool? isreplay,
+    required Widget listview,
+    required Widget commentsend,
     required TextEditingController commenControler,
     required String tokenpost}) {
   var cubit = SocialappCubit.get(context);
@@ -20,7 +22,6 @@ Widget streamcomment(
   return Conditional.single(
     context: context,
     conditionBuilder: (context) => snapshot.hasData == true,
-    // && cubit.comments.isNotEmpty == true ,
     widgetBuilder: (context) {
       return Stack(children: [
         SizedBox(
@@ -43,29 +44,25 @@ Widget streamcomment(
                             Navigator.of(context).pop();
                           },
                           icon: const Icon(Icons.arrow_back)),
-                      const Text(
-                        'Comments',
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Text(
+                          appBarTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: isreplay == true ? 18 : 22,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                if (cubit.comments.isEmpty)
-                  Center(child: LottieBuilder.asset(AppImageAssets.empty2)),
-                ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(8),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return buildcommentitem(
-                        cubit.comments[index],
-                        context,
-                        index,
-                        postId,
-                      );
-                    },
-                    itemCount: cubit.comments.length)
+                if (comments.isEmpty)
+                  Center(
+                    child: LottieBuilder.asset(AppImageAssets.empty2),
+                  ),
+                listview
               ],
             ),
           ),
@@ -76,12 +73,7 @@ Widget streamcomment(
             color: Colors.white.withOpacity(0.09),
             child: LottieBuilder.asset(AppImageAssets.loading),
           ),
-        commentsend(
-          context: context,
-          commenControler: commenControler,
-          postId: postId,
-          token: tokenpost,
-        ),
+        commentsend,
         if (commentimage != null)
           Positioned(
             bottom: 40,

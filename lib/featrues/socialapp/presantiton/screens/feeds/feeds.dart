@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:lottie/lottie.dart';
 import 'package:socialapp/config/endpoints.dart';
 import 'package:socialapp/core/constant/assets.dart';
 import 'package:socialapp/featrues/socialapp/data/models/getpost.dart';
@@ -32,7 +33,7 @@ class Feedsscreen extends StatelessWidget {
           navigtonto(context, NewPosts());
         }
         if (state is SocialTest) {
-          await SocialappCubit.get(context). playLikeSound();
+          await SocialappCubit.get(context).playLikeSound();
         }
         if (state is DeletPostDone) {
           showSnackBar(
@@ -148,8 +149,7 @@ class Feedsscreen extends StatelessWidget {
                   height: 5,
                 ),
                 Container(
-                  padding: EdgeInsets.zero,
-                  height: 160,
+                  height: MediaQuery.of(context).size.height * 0.24,
                   width: double.infinity,
                   margin: const EdgeInsets.all(8),
                   child: ListView.separated(
@@ -184,12 +184,11 @@ class Feedsscreen extends StatelessWidget {
                             GetPosts model = cubit.post[index];
 
                             return buildpostitem(context, index,
-                                
                                 tokenpost: model.token!,
                                 datatime: model.datatime,
                                 text: model.text,
+                                vip: model.vip,
                                 uid1: model.uid,
-                              
                                 postimage: model.postimage,
                                 likes: model.likes,
                                 postId: model.postid,
@@ -209,7 +208,7 @@ class Feedsscreen extends StatelessWidget {
                           itemCount: cubit.post.length,
                         ),
                     fallbackBuilder: (context) {
-                      return Center(child: Image.asset(AppImageAssets.nodate));
+                      return Center(child: LottieBuilder.asset(AppImageAssets.sleep));
                     })
               ],
             ),

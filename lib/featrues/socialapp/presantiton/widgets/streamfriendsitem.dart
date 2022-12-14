@@ -22,8 +22,7 @@ Widget stremFriends(
       context,
     ) {
       return StreamBuilder<QuerySnapshot>(
-          stream:
-           FirebaseFirestore.instance
+          stream: FirebaseFirestore.instance
               .collection('users')
               .doc(otheruid)
               .collection('friends')
@@ -67,8 +66,8 @@ Widget stremFriends(
                       ],
                     ),
                     SizedBox(
-                      width: double.infinity,
-                      height: 150,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.2,
                       child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
@@ -77,7 +76,6 @@ Widget stremFriends(
                                 as Map<String, dynamic>;
                             return Friendsitem(
                               uid: snap['uid'],
-                             
                             );
                           },
                           separatorBuilder: (context, index) => const Padding(

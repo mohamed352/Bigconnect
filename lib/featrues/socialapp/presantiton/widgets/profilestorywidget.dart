@@ -60,30 +60,34 @@ class ProfileStoryWidget extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(
-                      width: 12,
+                      width: 8,
                     ),
                     InkWell(
                       onTap: () {
                         navigtonto(context, ProfileScreen(otheruid: model.uid));
                       },
-                      child: Text(
-                        snap['name'],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            height: 2.5),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.56,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${snap['name']}',
+                              maxLines: 1,
+                              overflow: TextOverflow.visible,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(getTimeDifferenceFromNow(date.toDate(), true),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      getTimeDifferenceFromNow(date.toDate(), false),
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 2.5),
-                    ),
+                    const Spacer(),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -93,7 +97,8 @@ class ProfileStoryWidget extends StatelessWidget {
                             },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 5),
+                                horizontal: 10,
+                              ),
                               child: Icon(
                                 Icons.close,
                                 size: 30,
@@ -115,13 +120,10 @@ class ProfileStoryWidget extends StatelessWidget {
                                   context: context,
                                   uidStory: '${model.uid}');
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5),
-                              child: Icon(
-                                Icons.more_horiz,
-                                size: 30,
-                                color: Colors.white,
-                              ),
+                            child: const Icon(
+                              Icons.more_horiz,
+                              size: 30,
+                              color: Colors.white,
                             )),
                       ],
                     ),
