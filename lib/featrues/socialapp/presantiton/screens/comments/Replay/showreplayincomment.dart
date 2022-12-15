@@ -40,109 +40,107 @@ Widget showreplay({
 
               cubit.replays.add(Replays.fromjason(element.data()));
             }
-            return Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          Replays model = cubit.replays[index];
-                          return StreamBuilder<DocumentSnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(model.uid)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                      child: LottieBuilder.asset(
-                                          AppImageAssets.loading));
-                                } else {
-                                  var snap = snapshot.data!.data()
-                                      as Map<String, dynamic>;
-                                  return InkWell(
-                                    onTap: () {
-                                      FocusNode focusNode = FocusNode();
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        Replays model = cubit.replays[index];
+                        return StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(model.uid)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(
+                                    child: LottieBuilder.asset(
+                                        AppImageAssets.loading));
+                              } else {
+                                var snap = snapshot.data!.data()
+                                    as Map<String, dynamic>;
+                                return InkWell(
+                                  onTap: () {
+                                    FocusNode focusNode = FocusNode();
 
-                                      addReplaytest(
-                                          context: context,
-                                          postId: postId,
-                                          snapshot: snapshot,
-                                          focusNode: focusNode,
-                                          commentid: commentid,
-                                          commentname: name,
-                                          tokenpost: tokenpost!);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            navigtonto(
-                                                context,
-                                                ProfileScreen(
-                                                    otheruid: snap['uid']));
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundImage: NetworkImage(
-                                                '${snap['image']}'),
+                                    addReplaytest(
+                                        context: context,
+                                        postId: postId,
+                                        snapshot: snapshot,
+                                        focusNode: focusNode,
+                                        commentid: commentid,
+                                        commentname: name,
+                                        tokenpost: tokenpost!);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          navigtonto(
+                                              context,
+                                              ProfileScreen(
+                                                  otheruid: snap['uid']));
+                                        },
+                                        child: CircleAvatar(
+                                          radius: 15,
+                                          backgroundImage: NetworkImage(
+                                              '${snap['image']}'),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.66,
+                                          child: Text(
+                                            model.text != null &&
+                                                    model.text != ''
+                                                ? '${snap['name']} ${model.text}'
+                                                : '${snap['name']}  Url ',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.clip,
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5),
-                                          child: SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.66,
-                                            child: Text(
-                                              model.text != null &&
-                                                      model.text != ''
-                                                  ? '${snap['name']} ${model.text}'
-                                                  : '${snap['name']}  Url ',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.clip,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              });
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 4),
-                          );
-                        },
-                        itemCount: cubit.replays.length > 4
-                            ? 4
-                            : cubit.replays.length),
-                  ),
-                  if (cubit.replays.length > 3)
-                    InkWell(
-                        onTap: () {
-                          FocusNode focusNode = FocusNode();
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            });
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 4),
+                        );
+                      },
+                      itemCount: cubit.replays.length > 4
+                          ? 4
+                          : cubit.replays.length),
+                ),
+                if (cubit.replays.length > 3)
+                  InkWell(
+                      onTap: () {
+                        FocusNode focusNode = FocusNode();
 
-                          addReplaytest(
-                              context: context,
-                              postId: postId,
-                              snapshot: snapshot,
-                              focusNode: focusNode,
-                              commentid: commentid,
-                              commentname: name,
-                              tokenpost: tokenpost!);
-                        },
-                        child: Text(
-                            'view ${cubit.replaysid.length} more replies')),
-                ],
-              ),
+                        addReplaytest(
+                            context: context,
+                            postId: postId,
+                            snapshot: snapshot,
+                            focusNode: focusNode,
+                            commentid: commentid,
+                            commentname: name,
+                            tokenpost: tokenpost!);
+                      },
+                      child: Text(
+                          'view ${cubit.replaysid.length} more replies')),
+              ],
             );
           } else {
             return Container();
