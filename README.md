@@ -33,7 +33,6 @@ flutter run
 ## Demo
 https://appetize.io/app/lxy4taye5c74sged6a4obomr54?device=pixel6&osVersion=12.0&scale=75
 ## Screenshots
-<div align="center">
   <div class="image-grid">
     <img src="https://github.com/mohamed352/Bigconnect/assets/48868363/99c5e906-d72a-462a-a301-212103ac389c" alt="intro" style="width: 300px;">
     <img src="https://github.com/mohamed352/Bigconnect/assets/48868363/63ccf8e6-4d81-4955-a74b-5ac6e804eaef" alt="singUp" style="width: 300px;">
