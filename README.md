@@ -4,6 +4,13 @@
 
 ## BigConnect
 BigConnect is a powerful Flutter application that enables seamless social networking and interaction with friends, family, and the world around you. This app, inspired by platforms like Facebook, offers a range of features designed to enhance your social experience. With BigConnect, you can create and edit posts, comment on posts, reply to comments, share stories, send friend requests, and receive notifications. The app leverages the robust capabilities of Firebase to provide a reliable and scalable backend infrastructure. Join the BigConnect community today and revolutionize the way you connect and engage with others.
+## Installation
+
+Clone the repository and run the following commands:
+```bash
+flutter pub get
+flutter run
+```
 ## Features
 
 - Light/dark mode toggle
@@ -16,13 +23,7 @@ BigConnect is a powerful Flutter application that enables seamless social networ
 - Send Friend Requests
 - Notification System
 - Login with Google and Facebook
-## Installation
-
-Clone the repository and run the following commands:
-```bash
-flutter pub get
-flutter run
-```
+- 
 ## Tools
 - Bloc & Cubit
 - Firebase
@@ -45,9 +46,15 @@ https://appetize.io/app/lxy4taye5c74sged6a4obomr54?device=pixel6&osVersion=12.0&
 | ------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------- |
 |![Comments_samsung-galaxys20-pink-portrait](https://github.com/mohamed352/Bigconnect/assets/48868363/4e5abb18-23c0-4677-b865-3153c053743b) | ![profile_samsung-galaxys20-pink-portrait](https://github.com/mohamed352/Bigconnect/assets/48868363/48ab96ef-a6a2-4549-bbed-500e7c5a56d7) |![setting_samsung-galaxys20-pink-portrait](https://github.com/mohamed352/Bigconnect/assets/48868363/6e66826a-c9c3-4f08-8450-fef0379ee7e7) |
 
-
-
-
+## Contact 
+  
+ If you have any questions or suggestions, feel free to reach out: 
+  
+  
+ - Email: [mohamedmostafa5380@gmail.com](mailto:mohamedmostafa5380@gmail.com) 
+ - LinkedIn: [Send offer](https://www.linkedin.com/in/mohamed-mostafa-a88328190) 
+ - facebook: [Mohamed Mostafa](https://www.facebook.com/profile.php?id=100022707412139&mibextid=ZbWKwL)
+ - WahtsApp: [Send Messege](https://wa.me/01551022078/?text=Hello)
 
 
 
